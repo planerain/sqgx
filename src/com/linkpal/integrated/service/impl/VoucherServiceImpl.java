@@ -2,7 +2,6 @@ package com.linkpal.integrated.service.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,6 +33,7 @@ import com.linkpal.integrated.util.HttpUtil;
  *
  * @author lichao
  * @date 2019年11月8日 下午5:41:17
+    *     实现思路:先接收ESB传过来的数据存入中间表(t_ESB_Voucher),再去中间表读取数据
  *
  */
 @WebService
@@ -41,43 +41,77 @@ import com.linkpal.integrated.util.HttpUtil;
 public class VoucherServiceImpl implements VoucherService {
 	private Connection conn = null;
 	private PreparedStatement pst = null;
-	private ResultSet rs = null;
-	private String explanation="";
-	private String number="";
-	private String date="";
-	private String group="";
 	private static final Logger Logger = LoggerFactory.getLogger(VoucherServiceImpl.class);
 
 	@Override
 	public String getVoucherData(String voucherData) throws ParseException {
 		Logger.info("接收到的凭证数据为:"+voucherData);
-		
 		JSONObject voucherDataObj = JSONObject.parseObject(voucherData);
-		boolean isReversal = voucherDataObj.containsKey("BANPZKNM");
-		String voucherId="";
-		int year = 0;
-		if(isReversal) {
-			voucherId = voucherDataObj.getString("BANPZKNM");
-			year = Integer.parseInt(voucherDataObj.getString("ZWPZK_KJND"));
-			try {
-				conn = DBUtils.getConnection();
-				if(conn!=null) {
-					pst = conn.prepareStatement("select t1.FExplanation,t1.FNumber,t1.FDate,t2.FName from t_voucher t1 left join t_vouchergroup t2 on t1.fgroupid=t2.fgroupid where t1.FVoucherId_GX=? and t1.FYear=?");
-					pst.setString(1, voucherId);
-					pst.setInt(2, year);
-					rs = pst.executeQuery();
-					while (rs.next()) {
-						explanation = rs.getString(1);
-						number = rs.getString(2);
-						date = rs.getString(3);
-						group = rs.getString(4);
-					}
+		
+		try {
+			conn = DBUtils.getConnection();
+			if(conn!=null) {
+				// 总共47个字段，实际表中需要增加Id(自增)，CreateDate(当前时间)，IsRead(默认为0)
+				pst=conn.prepareStatement("insert into t_ESB_Voucher(ZWPZK_PZNM,ZWPZK_DWBH,ZWPZK_KJND,ZWPZK_KJQJ,ZWPZK_PZRQ,ZWPZK_PZBH,ZWPZK_LXBH,ZWPZK_FJZS,ZWPZK_ZDR,ZWPZK_TZDZS,ZWPZK_ZY,ZWPZK_JE,CREATEDTIME,ZWPZK_ZDRBH,ZWFZYS_ID,ZWPZFL_KMBH,ZWPZFL_ZY,"
+						+ "ZWPZFL_JZFX,ZWFZYS_YSBH,ZWFZYS_BMBH,ZWFZYS_WLDWBH,ZWFZYS_ZGBH,ZWFZYS_CPBH,ZWFZYS_XMBH1,ZWFZYS_XMBH2,ZWFZYS_XMBH3,ZWFZYS_XMBH4,ZWFZYS_XMBH5,ZWFZYS_XMBH6,ZWFZYS_XMBH7,ZWFZYS_XMBH8,ZWFZYS_XMBH9,ZWFZYS_XMBH10,ZWFZYS_XMBH11,ZWFZYS_XMBH12,"
+						+ "ZWFZYS_XMBH13,ZWFZYS_XMBH14,ZWFZYS_XMBH15,ZWFZYS_WBBH,ZWFZYS_SL,ZWFZYS_DJ,ZWFZYS_WB,ZWFZYS_HL,ZWFZYS_JE,ZWFZYS_YWRQ,ZWFZYS_PJH,ZWFZYS_YT) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				pst.setString(1, voucherDataObj.getString("ZWPZK_PZNM"));
+				pst.setString(2, voucherDataObj.getString("ZWPZK_DWBH"));
+				pst.setString(3, voucherDataObj.getString("ZWPZK_KJND"));
+				pst.setString(4, voucherDataObj.getString("ZWPZK_KJQJ"));
+				pst.setString(5, voucherDataObj.getString("ZWPZK_PZRQ"));
+				pst.setString(6, voucherDataObj.getString("ZWPZK_PZBH"));
+				pst.setString(7, voucherDataObj.getString("ZWPZK_LXBH"));
+				pst.setInt(8, voucherDataObj.getIntValue("ZWPZK_FJZS"));
+				pst.setString(9, voucherDataObj.getString("ZWPZK_ZDR"));
+				pst.setInt(10, voucherDataObj.getIntValue("ZWPZK_TZDZS"));
+				pst.setString(11, voucherDataObj.getString("ZWPZK_ZY"));
+				pst.setString(12, voucherDataObj.getString("ZWPZK_JE"));
+				pst.setString(13, voucherDataObj.getString("CREATEDTIME"));
+				pst.setString(14, voucherDataObj.getString("ZWPZK_ZDRBH"));
+				JSONArray entries = voucherDataObj.getJSONArray("ZWPZFL");
+				for (int i = 0; i < entries.size(); i++) {
+					JSONObject entryData = entries.getJSONObject(i);
+					pst.setString(15, entryData.getString("ZWFZYS_ID"));
+					pst.setString(16, entryData.getString("ZWPZFL_KMBH"));
+					pst.setString(17, entryData.getString("ZWPZFL_ZY"));
+					pst.setString(18, entryData.getString("ZWPZFL_JZFX"));
+					pst.setString(19, entryData.getString("ZWFZYS_YSBH"));
+					pst.setString(20, entryData.getString("ZWFZYS_BMBH"));
+					pst.setString(21, entryData.getString("ZWFZYS_WLDWBH"));
+					pst.setString(22, entryData.getString("ZWFZYS_ZGBH"));
+					pst.setString(23, entryData.getString("ZWFZYS_CPBH"));
+					pst.setString(24, entryData.getString("ZWFZYS_XMBH1"));
+					pst.setString(25, entryData.getString("ZWFZYS_XMBH2"));
+					pst.setString(26, entryData.getString("ZWFZYS_XMBH3"));
+					pst.setString(27, entryData.getString("ZWFZYS_XMBH4"));
+					pst.setString(28, entryData.getString("ZWFZYS_XMBH5"));
+					pst.setString(29, entryData.getString("ZWFZYS_XMBH6"));
+					pst.setString(30, entryData.getString("ZWFZYS_XMBH7"));
+					pst.setString(31, entryData.getString("ZWFZYS_XMBH8"));
+					pst.setString(32, entryData.getString("ZWFZYS_XMBH9"));
+					pst.setString(33, entryData.getString("ZWFZYS_XMBH10"));
+					pst.setString(34, entryData.getString("ZWFZYS_XMBH11"));
+					pst.setString(35, entryData.getString("ZWFZYS_XMBH12"));
+					pst.setString(36, entryData.getString("ZWFZYS_XMBH13"));
+					pst.setString(37, entryData.getString("ZWFZYS_XMBH14"));
+					pst.setString(38, entryData.getString("ZWFZYS_XMBH15"));
+					pst.setString(39, entryData.getString("ZWFZYS_WBBH"));
+					pst.setString(40, entryData.getString("ZWFZYS_SL"));
+					pst.setString(41, entryData.getString("ZWFZYS_DJ"));
+					pst.setString(42, entryData.getString("ZWFZYS_WB"));
+					pst.setString(43, entryData.getString("ZWFZYS_HL"));
+					pst.setString(44, entryData.getString("ZWFZYS_JE"));
+					pst.setString(45, entryData.getString("ZWFZYS_YWRQ"));
+					pst.setString(46, entryData.getString("ZWFZYS_PJH"));
+					pst.setString(47, entryData.getString("ZWFZYS_YT"));
+					pst.execute();
 				}
-			} catch (Exception e) {
-				Logger.info(e.getMessage());
-			}finally {
-				DBUtils.closeConnection(conn, pst, rs);
 			}
+		} catch (Exception e) {
+			Logger.info(e.getMessage());
+		}finally {
+			DBUtils.closeConnection(conn, pst, null);
 		}
 		
 		VoucherData vd = new VoucherData();
@@ -111,11 +145,7 @@ public class VoucherServiceImpl implements VoucherService {
 			body.setEntryId(i);
 			body.setExchangeRate(entryData.getFloatValue("ZWFZYS_HL"));
 			// 冲2014/2/28记字第44号凭证 外购入库_滚珠
-			if(isReversal) {
-				body.setExplanation("冲"+date+group+"字第"+number+"号凭证 "+explanation);
-			}else {
-				body.setExplanation(entryData.getString("ZWPZFL_ZY"));
-			}
+			body.setExplanation(entryData.getString("ZWPZFL_ZY"));
 			body.setMeasureUnit(null);
 			body.setMeasureUnitUUID(null);
 			body.setQuantity(entryData.getFloatValue("ZWFZYS_SL"));
@@ -164,11 +194,7 @@ public class VoucherServiceImpl implements VoucherService {
 		voucher.setDate(new SimpleDateFormat("yyyy-MM-dd")
 				.format(new SimpleDateFormat("yyyyMMdd").parse(voucherDataObj.getString("ZWPZK_PZRQ"))));
 		// 冲2014/2/28记字第44号凭证 外购入库_滚珠
-		if(isReversal) {
-			voucher.setExplanation("冲"+date+group+"字第"+number+"号凭证 "+explanation);
-		}else {
-			voucher.setExplanation(voucherDataObj.getString("ZWPZK_ZY"));
-		}
+		voucher.setExplanation(voucherDataObj.getString("ZWPZK_ZY"));
 		voucher.setGroup(voucherDataObj.getString("ZWPZK_LXBH"));
 		voucher.setHandler("");
 		voucher.setNumber(0);
@@ -204,9 +230,9 @@ public class VoucherServiceImpl implements VoucherService {
 		result.setVoucherId(voucherDataObj.getString("ZWPZK_PZNM"));
 		result.setFiscalYear(voucherDataObj.getString("ZWPZK_KJND"));
 		result.setErpVoucherCode("");
-		result.setErpVoucherId("");
+		result.setErpVoucherId(resultObj.getString("Message").substring(12));
 		result.setGenerateFlag("");
-		result.setGenerateMsg("");
+		result.setGenerateMsg(resultObj.getString("Message")+"--"+resultObj.getString("Data"));
 		result.setGenerateTime("");
 		//result.setVoucherId(voucherDataObj.getString("ZWPZK_PZNM"));
 		//result.setOrgNumber(voucherDataObj.getString("ZWPZK_DWBH"));

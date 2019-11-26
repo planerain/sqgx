@@ -29,12 +29,20 @@
     
     <context:component-scan base-package="com.linkpal.integrated.client"></context:component-scan>
     
-    <!-- 凭证对接  -->
+    <!-- 凭证生成对接  -->
     <jaxws:server address="/voucher" serviceClass="com.linkpal.integrated.service.VoucherService">
         <jaxws:serviceBean>
             <ref bean="VoucherService"/>
         </jaxws:serviceBean>
     </jaxws:server>
     <bean id="VoucherService" class="com.linkpal.integrated.service.impl.VoucherServiceImpl"></bean>
+    
+    <!-- 凭证冲销对接  -->
+    <jaxws:server address="/voucherReversal" serviceClass="com.linkpal.integrated.service.VoucherReversalService">
+        <jaxws:serviceBean>
+            <ref bean="VoucherReversalService"/>
+        </jaxws:serviceBean>
+    </jaxws:server>
+    <bean id="VoucherReversalService" class="com.linkpal.integrated.service.impl.VoucherReversalServiceImpl"></bean>
     
 </beans>

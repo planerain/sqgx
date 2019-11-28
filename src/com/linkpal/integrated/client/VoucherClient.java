@@ -30,8 +30,17 @@ public class VoucherClient {
 	private Connection conn = null;
 	private PreparedStatement pst1 = null;
 	private PreparedStatement pst2 = null;
-	private ResultSet rs = null;
+	private PreparedStatement pst3 = null;
+	private ResultSet rs1 = null;
+	private ResultSet rs2 = null;
 	private static final Logger Logger = LoggerFactory.getLogger(VoucherClient.class);
+	
+	// 共享凭证内码
+	String gxVoucherId;
+	// 组织编码
+	String orgNumber;
+	// 单据编号
+	String billNo;
 
 	// 每月最后一天晚上22:00触发执行
 	@Scheduled(cron = "0 00 22 28-31 * ?")
@@ -46,9 +55,17 @@ public class VoucherClient {
 					Calendar cal = Calendar.getInstance();
 					pst1.setInt(1, cal.get(Calendar.MONTH) + 1);
 					pst1.setInt(2, cal.get(Calendar.YEAR));
-					rs = pst1.executeQuery();
-					if (rs.next()) {
-						int VoucherId = rs.getInt(1);
+					rs1 = pst1.executeQuery();
+					if (rs1.next()) {
+						int VoucherId = rs1.getInt(1);
+						pst2 = conn.prepareStatement("select distinct ZWPZK_PZNM,ZWPZK_DWBH,ZWPZK_ZDRBH from t_ESB_Voucher where erpVoucherId=?");
+						pst2.setInt(1, VoucherId);
+						rs2 = pst2.executeQuery();
+						while (rs2.next()) {
+							gxVoucherId = rs2.getString(1);
+							orgNumber = rs2.getString(2);
+							billNo = rs2.getString(3);
+						}
 						// 发送 GET 请求
 						String authorityCode = "4f03ba08c7d87ece76858af449ad24e0f9a2ad3bafafe148";
 						String token = HttpUtil.sendGet("http://172.16.7.153/K3API/Token/Create",
@@ -60,16 +77,20 @@ public class VoucherClient {
 										+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"),
 								param);
 						JSONObject resObj = JSONObject.parseObject(response);
+						JSONObject sendJson = resObj.getJSONArray("Data").getJSONObject(1);
+						sendJson.put("ZWPZK_PZNM", gxVoucherId);
+						sendJson.put("ZWPZK_DWBH", orgNumber);
+						sendJson.put("ZWPZK_DJBH", billNo);
 						
 						JaxWsDynamicClientFactory clientFactory =JaxWsDynamicClientFactory.newInstance();
 						Client client = clientFactory.createClient("http://10.1.100.1:807/InterfaceWebService.asmx?wsdl");
 						try {
-							Object[] result = client.invoke("GetERPDataByCus",resObj.getString(""));
+							Object[] result = client.invoke("GetERPDataByCus",sendJson.getString(""));
 							for (Object json : result) {
 								if (((JSONObject) JSON.toJSON(json)).getIntValue("StatusCode") == 200) {
-									pst2 = conn.prepareStatement("update EIS_Voucher set IsRead = 1 where VoucherId=?");
-									pst2.setInt(1, VoucherId);
-									pst2.execute();
+									pst3 = conn.prepareStatement("update EIS_Voucher set IsRead = 1 where VoucherId=?");
+									pst3.setInt(1, VoucherId);
+									pst3.execute();
 								}
 								else {
 									Logger.info(((JSONObject) JSON.toJSON(json)).getString("Message"));
@@ -85,8 +106,9 @@ public class VoucherClient {
 			} catch (Exception e) {
 				Logger.info(e.getMessage());
 			} finally {
-				DBUtils.closeConnection(conn, pst1, rs);
-				DBUtils.closeConnection(conn, pst2, null);
+				DBUtils.closeConnection(conn, pst1, rs1);
+				DBUtils.closeConnection(conn, pst2, rs2);
+				DBUtils.closeConnection(conn, pst3, null);
 			}
 		}
 	}

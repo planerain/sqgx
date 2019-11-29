@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.linkpal.integrated.service.VoucherReversalService;
+import com.linkpal.integrated.util.CommonUtil;
 import com.linkpal.integrated.util.HttpUtil;
 
 /**
@@ -61,7 +62,7 @@ public class VoucherReversalServiceImpl implements VoucherReversalService {
 			voucherNumber = resObj.getIntValue("FNumber");
 			explanation = resObj.getString("FExplanation");
 			resObj.put("FExplanation", "冲"+date+voucherType+"字第"+voucherNumber+"号凭证 "+explanation);
-			resObj.put("FNumber", 0);
+			resObj.put("FNumber", CommonUtil.getNo(voucherType.substring(0, 3), voucherType.substring(3)));
 			resObj.put("FSerialNum", 0);
 			resObj.put("FVoucherID",0);
 			JSONArray apArray = resObj.getJSONArray("Entries");
@@ -102,7 +103,7 @@ public class VoucherReversalServiceImpl implements VoucherReversalService {
 		    voucherNumber = resObj.getIntValue("FNumber");
 		    explanation = resObj.getString("FExplanation");
 		    resObj.put("FExplanation", "冲"+date+voucherType+"字第"+voucherNumber+"号凭证 "+explanation);
-		    resObj.put("FNumber", 0);
+		    resObj.put("FNumber", CommonUtil.getNo(voucherType.substring(0, 3), voucherType.substring(3)));
 		    resObj.put("FSerialNum", 0);
 		    resObj.put("FVoucherID",0);
 		    JSONArray apArray = resObj.getJSONArray("Entries");

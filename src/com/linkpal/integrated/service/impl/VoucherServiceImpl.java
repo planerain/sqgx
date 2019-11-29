@@ -30,6 +30,7 @@ import com.linkpal.integrated.entity.Voucher;
 import com.linkpal.integrated.entity.VoucherBody;
 import com.linkpal.integrated.entity.VoucherData;
 import com.linkpal.integrated.service.VoucherService;
+import com.linkpal.integrated.util.CommonUtil;
 import com.linkpal.integrated.util.DBUtils;
 import com.linkpal.integrated.util.HttpUtil;
 
@@ -50,6 +51,8 @@ public class VoucherServiceImpl implements VoucherService {
 	private PreparedStatement pst2 = null;
 	private ResultSet rs2 = null;
 	
+	// 凭证类型
+	String voucherType;
 	// 共享凭证内码
 	String gxVoucherId;
 	// 组织编码
@@ -148,6 +151,7 @@ public class VoucherServiceImpl implements VoucherService {
 					gxVoucherId = rs.getString(1);
 					orgNumber = rs.getString(2);
 					year = rs.getString(3);
+					voucherType = rs.getString(7);
 					Voucher voucher = new Voucher();
 					voucher.setAttachments(rs.getInt(8));
 					voucher.setCashier("NONE");
@@ -155,7 +159,7 @@ public class VoucherServiceImpl implements VoucherService {
 					voucher.setExplanation(rs.getString(11));
 					voucher.setGroup(orgNumber+rs.getString(7));
 					voucher.setHandler("");
-					voucher.setNumber(0);
+					voucher.setNumber(CommonUtil.getNo(orgNumber, voucherType));
 					voucher.setPeriod(Integer.parseInt(rs.getString(4)));
 					voucher.setPoster("NONE");
 					voucher.setPreparer(rs.getString(9));

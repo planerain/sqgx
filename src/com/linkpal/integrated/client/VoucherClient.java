@@ -85,7 +85,7 @@ public class VoucherClient {
 						JaxWsDynamicClientFactory clientFactory =JaxWsDynamicClientFactory.newInstance();
 						Client client = clientFactory.createClient("http://10.1.100.1:807/InterfaceWebService.asmx?wsdl");
 						try {
-							Object[] result = client.invoke("GetERPDataByCus",sendJson.getString(""));
+							Object[] result = client.invoke("GetERPDataByCus",sendJson.toJSONString());
 							for (Object json : result) {
 								if (((JSONObject) JSON.toJSON(json)).getIntValue("StatusCode") == 200) {
 									pst3 = conn.prepareStatement("update EIS_Voucher set IsRead = 1 where VoucherId=?");

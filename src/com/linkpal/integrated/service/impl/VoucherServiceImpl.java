@@ -162,6 +162,7 @@ public class VoucherServiceImpl implements VoucherService {
 					voucher.setReference("");
 					voucher.setSerialNum(0);
 					voucher.setTransDate(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyyMMdd").parse(rs.getString(5))));
+					voucher.setVoucherID(0);
 					voucher.setYear(rs.getInt(3));
 					pst2 = conn.prepareStatement("select ZWFZYS_ID,ZWPZFL_KMBH,ZWPZFL_ZY,ZWPZFL_JZFX,ZWFZYS_YSBH,ZWFZYS_BMBH,ZWFZYS_WLDWBH,ZWFZYS_ZGBH,ZWFZYS_CPBH,ZWFZYS_XMBH1,ZWFZYS_XMBH2,ZWFZYS_XMBH3,ZWFZYS_XMBH4,ZWFZYS_XMBH5,ZWFZYS_XMBH6,ZWFZYS_XMBH7,ZWFZYS_XMBH8,ZWFZYS_XMBH9,ZWFZYS_XMBH10,ZWFZYS_XMBH11,ZWFZYS_XMBH12,ZWFZYS_XMBH13,ZWFZYS_XMBH14,ZWFZYS_XMBH15,ZWFZYS_WBBH,ZWFZYS_SL,ZWFZYS_DJ,ZWFZYS_WB,ZWFZYS_HL,ZWFZYS_JE,ZWFZYS_YWRQ,ZWFZYS_PJH,ZWFZYS_YT from t_ESB_Voucher where ZWPZK_PZNM=? and ZWPZK_DWBH=? and ZWPZK_KJND=?");
 					pst2.setString(1, gxVoucherId);

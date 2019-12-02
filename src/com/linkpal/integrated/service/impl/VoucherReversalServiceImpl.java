@@ -128,6 +128,7 @@ public class VoucherReversalServiceImpl implements VoucherReversalService {
 		    		"http://172.16.7.153/K3API/VoucherData/UpdateVoucher?token="
 		    				+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"),
 		    		JSON.toJSONString(sendJson, SerializerFeature.WriteMapNullValue));
+		    // 生成新的凭证
 		    }
 		return null;
 	}

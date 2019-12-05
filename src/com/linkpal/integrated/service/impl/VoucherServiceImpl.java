@@ -293,7 +293,7 @@ public class VoucherServiceImpl implements VoucherService {
 		}
 		
 		String param = JSON.toJSONString(vd, SerializerFeature.WriteMapNullValue);
-		
+		Logger.info("向接口发送的数据为:"+param);
 		// 发送 GET 请求
 		String authorityCode = "4f03ba08c7d87ece76858af449ad24e0f9a2ad3bafafe148";
 		String token = HttpUtil.sendGet("http://172.16.7.153/K3API/Token/Create", "authorityCode=" + authorityCode);

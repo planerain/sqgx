@@ -78,6 +78,7 @@ public class VoucherClient {
 								param);
 						JSONObject resObj = JSONObject.parseObject(response);
 						JSONObject sendJson = resObj.getJSONArray("Data").getJSONObject(1);
+						sendJson.put("FNumber",sendJson.getString("FGroup")+sendJson.getIntValue("FNumber"));
 						sendJson.put("ZWPZK_PZNM", gxVoucherId);
 						sendJson.put("ZWPZK_DWBH", orgNumber);
 						sendJson.put("ZWPZK_DJBH", billNo);

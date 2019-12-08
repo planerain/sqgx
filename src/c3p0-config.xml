@@ -3,7 +3,7 @@
 	<!-- 默认配置，如果没有指定则使用这个配置 -->
 	<default-config>
 		<property name="user">sa</property>
-		<property name="password">123456</property>
+		<property name="password">123</property>
 		<property name="driverClass">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
 		<property name="jdbcUrl">jdbc:sqlserver://172.16.7.153:1433;DatabaseName=AIS20171226203239</property>
 		<property name="initialPoolSize">10</property>

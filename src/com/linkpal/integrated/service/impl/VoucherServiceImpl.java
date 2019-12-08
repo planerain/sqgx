@@ -167,7 +167,7 @@ public class VoucherServiceImpl implements VoucherService {
 					voucher.setSerialNum(0);
 					voucher.setTransDate(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyyMMdd").parse(rs.getString(5))));
 					voucher.setVoucherID(0);
-					voucher.setYear(rs.getInt(3));
+					voucher.setYear(Integer.parseInt(rs.getString(3)));
 					pst2 = conn.prepareStatement("select ZWFZYS_ID,ZWPZFL_KMBH,ZWPZFL_ZY,ZWPZFL_JZFX,ZWFZYS_YSBH,ZWFZYS_BMBH,ZWFZYS_WLDWBH,ZWFZYS_ZGBH,ZWFZYS_CPBH,ZWFZYS_XMBH1,ZWFZYS_XMBH2,ZWFZYS_XMBH3,ZWFZYS_XMBH4,ZWFZYS_XMBH5,ZWFZYS_XMBH6,ZWFZYS_XMBH7,ZWFZYS_XMBH8,ZWFZYS_XMBH9,ZWFZYS_XMBH10,ZWFZYS_XMBH11,ZWFZYS_XMBH12,ZWFZYS_XMBH13,ZWFZYS_XMBH14,ZWFZYS_XMBH15,ZWFZYS_WBBH,ZWFZYS_SL,ZWFZYS_DJ,ZWFZYS_WB,ZWFZYS_HL,ZWFZYS_JE,ZWFZYS_YWRQ,ZWFZYS_PJH,ZWFZYS_YT from t_ESB_Voucher where ZWPZK_PZNM=? and ZWPZK_DWBH=? and ZWPZK_KJND=?");
 					pst2.setString(1, gxVoucherId);
 					pst2.setString(2, orgNumber);
@@ -208,17 +208,17 @@ public class VoucherServiceImpl implements VoucherService {
 						
 						List<AccountProject> apList = new ArrayList<AccountProject>();
 						// 部门编号
-						if(rs2.getString(6)!=null || !rs2.getString(6).equals("")) {
+						if(rs2.getString(6)!=null && !rs2.getString(6).equals("")) {
 							AccountProject acctProject = new AccountProject();
 							acctProject.setDetailName("");
 							acctProject.setDetailNumber(rs2.getString(6));
 							acctProject.setDetailUUID("{" + UUID.randomUUID().toString().toUpperCase() + "}");
-							acctProject.setTypeName("");
+							acctProject.setTypeName("部门");
 							acctProject.setTypeNumber("002");
 							apList.add(acctProject);
 						}
 						// 往来单位编号
-						if(rs2.getString(7)!=null || !rs2.getString(7).equals("")) {
+						if(rs2.getString(7)!=null && !rs2.getString(7).equals("")) {
 							AccountProject acctProject = new AccountProject();
 							acctProject.setDetailName("");
 							acctProject.setDetailNumber(rs2.getString(7));
@@ -228,22 +228,22 @@ public class VoucherServiceImpl implements VoucherService {
 							apList.add(acctProject);
 						}
 						// 职工编号
-						if(rs2.getString(8)!=null || !rs2.getString(8).equals("")) {
+						if(rs2.getString(8)!=null && !rs2.getString(8).equals("")) {
 							AccountProject acctProject = new AccountProject();
 							acctProject.setDetailName("");
 							acctProject.setDetailNumber(rs2.getString(8));
 							acctProject.setDetailUUID("{" + UUID.randomUUID().toString().toUpperCase() + "}");
-							acctProject.setTypeName("");
+							acctProject.setTypeName("职员");
 							acctProject.setTypeNumber("003");
 							apList.add(acctProject);
 						}
 						// 产品编号
-						if(rs2.getString(9)!=null || !rs2.getString(9).equals("")) {
+						if(rs2.getString(9)!=null && !rs2.getString(9).equals("")) {
 							AccountProject acctProject = new AccountProject();
 							acctProject.setDetailName("");
 							acctProject.setDetailNumber(rs2.getString(9));
 							acctProject.setDetailUUID("{" + UUID.randomUUID().toString().toUpperCase() + "}");
-							acctProject.setTypeName("");
+							acctProject.setTypeName("物料");
 							acctProject.setTypeNumber("004");
 							apList.add(acctProject);
 						}
@@ -251,7 +251,7 @@ public class VoucherServiceImpl implements VoucherService {
 						body.setAcctList(apList);
 						list.add(body);
 						
-						if(rs2.getString(10)!=null || !rs2.getString(10).equals("")) {
+						if(rs2.getString(10)!=null && !rs2.getString(10).equals("")) {
 							CashFlow cashFlow = new CashFlow();
 							cashFlow.setAccName("");
 							cashFlow.setAccNumber(rs2.getString(2));

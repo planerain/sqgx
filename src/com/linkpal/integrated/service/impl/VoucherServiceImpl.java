@@ -181,8 +181,8 @@ public class VoucherServiceImpl implements VoucherService {
 						VoucherBody body = new VoucherBody();
 						body.setAccountName("");
 						body.setAccountNumber(rs2.getString(2));
-						body.setAmount(rs2.getFloat(30));
-						body.setAmountFor(rs2.getFloat(30)*rs2.getFloat(29));
+						body.setAmount(rs2.getFloat(30)*rs2.getFloat(29));
+						body.setAmountFor(rs2.getFloat(30));
 						// 如果外币编号为空，则币别默认为RMB
 						if(rs2.getString(25)==null || rs2.getString(25).equals("")) {
 							body.setCurrencyName("人民币");
@@ -267,8 +267,8 @@ public class VoucherServiceImpl implements VoucherService {
 							CashFlow cashFlow = new CashFlow();
 							cashFlow.setAccName("");
 							cashFlow.setAccNumber(rs2.getString(2));
-							cashFlow.setAmount(rs2.getFloat(30));
-							cashFlow.setAmountFor(rs2.getFloat(30)*rs2.getFloat(29));
+							cashFlow.setAmount(rs2.getFloat(30)*rs2.getFloat(29));
+							cashFlow.setAmountFor(rs2.getFloat(30));
 							cashFlow.setClassName("现金流量项目");
 							cashFlow.setClassNumber("i009");
 							// 如果外币编号为空，则币别默认为RMB
@@ -317,6 +317,7 @@ public class VoucherServiceImpl implements VoucherService {
 		JaxWsDynamicClientFactory clientFactory =JaxWsDynamicClientFactory.newInstance();
 		Client client = clientFactory.createClient("http://172.16.2.139/cwbase/service/jzstandiface/VoucherGenerateResultService.asmx?wsdl");
 		JSONObject resultObj = JSONObject.parseObject(response);
+		Logger.info(resultObj.getString("Data"));
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		if(resultObj.getIntValue("StatusCode") == 200) {
 			// 此处去数据库读取数据

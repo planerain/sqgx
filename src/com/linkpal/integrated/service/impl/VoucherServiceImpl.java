@@ -317,12 +317,26 @@ public class VoucherServiceImpl implements VoucherService {
 		JaxWsDynamicClientFactory clientFactory =JaxWsDynamicClientFactory.newInstance();
 		Client client = clientFactory.createClient("http://172.16.2.139/cwbase/service/jzstandiface/VoucherGenerateResultService.asmx?wsdl");
 		JSONObject resultObj = JSONObject.parseObject(response);
-		Logger.info(resultObj.getString("Data"));
+		Logger.info("生成状态:"+resultObj.getString("Data"));
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		if(resultObj.getIntValue("StatusCode") == 200) {
 			// 此处去数据库读取数据
-			erpVoucherCode="";
 			erpVoucherId = resultObj.getString("Data").substring(12);
+			try {
+				conn = DBUtils.getConnection();
+				if(conn!=null) {
+					pst = conn.prepareStatement("select t2.FName+convert(varchar(10),t1.FNumber) FErpVoucherCode from t_Voucher t1 left join t_VoucherGroup t2 on t1.FGroupID=t2.FGroupID where t1.FVoucherID=?");
+					pst.setInt(1, Integer.parseInt(erpVoucherId));
+					rs = pst.executeQuery();
+					while (rs.next()) {
+						erpVoucherCode=rs.getString(1);
+					}
+				}
+			} catch (Exception e) {
+				Logger.info(e.getMessage());
+			}finally {
+				DBUtils.closeConnection(conn, pst, rs);
+			}
 			generateFlag = true;
 		}else {
 			generateMsg = resultObj.getString("Data");
@@ -360,6 +374,6 @@ public class VoucherServiceImpl implements VoucherService {
 		}finally {
 			DBUtils.closeConnection(conn, pst, null);
 		}
-		return "";
+		return "success";
 	}
 }

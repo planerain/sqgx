@@ -50,6 +50,8 @@ public class VoucherServiceImpl implements VoucherService {
 	private ResultSet rs = null;
 	private PreparedStatement pst2 = null;
 	private ResultSet rs2 = null;
+	private PreparedStatement pst3 = null;
+	private ResultSet rs3 = null;
 	
 	// 凭证类型
 	String voucherType;
@@ -190,7 +192,7 @@ public class VoucherServiceImpl implements VoucherService {
 							body.setCurrencyNumber(rs2.getString(25));
 						}
 						// 共享 1：借 2：贷		K3 1：借 0：贷
-						if(rs.getString(4).equals("1")) {
+						if(rs2.getString(4).equals("1")) {
 							body.setDC(1);
 						}else {
 							body.setDC(0);
@@ -223,8 +225,18 @@ public class VoucherServiceImpl implements VoucherService {
 							acctProject.setDetailName("");
 							acctProject.setDetailNumber(rs2.getString(7));
 							acctProject.setDetailUUID("{" + UUID.randomUUID().toString().toUpperCase() + "}");
-							acctProject.setTypeName("");
-							acctProject.setTypeNumber("");
+							pst3 = conn.prepareStatement("select FItemClassID from t_Item where FNumber=? and FItemClassID in (1,8)");
+							pst3.setString(1, rs2.getString(7));
+							rs3 = pst3.executeQuery();
+							while (rs3.next()) {
+								if(rs3.getInt(1) == 1) {
+									acctProject.setTypeName("客户");
+									acctProject.setTypeNumber("001");
+								}else {
+									acctProject.setTypeName("供应商");
+									acctProject.setTypeNumber("008");
+								}
+							}
 							apList.add(acctProject);
 						}
 						// 职工编号
@@ -290,6 +302,7 @@ public class VoucherServiceImpl implements VoucherService {
 		}finally {
 			DBUtils.closeConnection(conn, pst, rs);
 			DBUtils.closeConnection(conn, pst2, rs2);
+			DBUtils.closeConnection(conn, pst3, rs3);
 		}
 		
 		String param = JSON.toJSONString(vd, SerializerFeature.WriteMapNullValue);

@@ -126,11 +126,11 @@ public class VoucherServiceImpl implements VoucherService {
 					pst.setString(37, entryData.getString("ZWFZYS_XMBH14"));
 					pst.setString(38, entryData.getString("ZWFZYS_XMBH15"));
 					pst.setString(39, entryData.getString("ZWFZYS_WBBH"));
-					pst.setString(40, entryData.getString("ZWFZYS_SL"));
-					pst.setString(41, entryData.getString("ZWFZYS_DJ"));
-					pst.setString(42, entryData.getString("ZWFZYS_WB"));
-					pst.setString(43, entryData.getString("ZWFZYS_HL"));
-					pst.setString(44, entryData.getString("ZWFZYS_JE"));
+					pst.setFloat(40, entryData.getFloatValue("ZWFZYS_SL"));
+					pst.setFloat(41, entryData.getFloatValue("ZWFZYS_DJ"));
+					pst.setFloat(42, entryData.getFloatValue("ZWFZYS_WB"));
+					pst.setFloat(43, entryData.getFloatValue("ZWFZYS_HL"));
+					pst.setFloat(44, entryData.getFloatValue("ZWFZYS_JE"));
 					pst.setString(45, entryData.getString("ZWFZYS_YWRQ"));
 					pst.setString(46, entryData.getString("ZWFZYS_PJH"));
 					pst.setString(47, entryData.getString("ZWFZYS_YT"));
@@ -197,7 +197,7 @@ public class VoucherServiceImpl implements VoucherService {
 						}else {
 							body.setDC(0);
 						}
-						body.setEntryId(rs2.getRow());
+						body.setEntryId(rs2.getRow()-1);
 						body.setExchangeRate(rs2.getFloat(29));
 						body.setExplanation(rs2.getString(3));
 						body.setMeasureUnit(null);
@@ -279,7 +279,7 @@ public class VoucherServiceImpl implements VoucherService {
 								cashFlow.setCurrencyName("");
 								cashFlow.setCurrencyNumber(rs2.getString(25));
 							}
-							cashFlow.setEntryid(rs2.getRow());
+							cashFlow.setEntryid(rs2.getRow()-1);
 							cashFlow.setEntryid2(Integer.parseInt(rs2.getString(11)));
 							cashFlow.setItemName("");
 							cashFlow.setItemNumber(rs2.getString(10));

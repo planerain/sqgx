@@ -353,21 +353,20 @@ public class VoucherServiceImpl implements VoucherService {
 		JSONObject resultJson = new JSONObject(resultMap);
 		try {
 			Object[] result = client.invoke("SetVoucherGenerateResult",resultJson.toJSONString());
-			for (Object json : result) {
-				if (((JSONObject) JSON.toJSON(json)).getBooleanValue("resultState")) {
-					conn = DBUtils.getConnection();
-					if(conn!=null) {
-						pst = conn.prepareStatement("update t_ESB_Voucher set IsRead = 1,erpVoucherId=? where ZWPZK_PZNM=? and ZWPZK_DWBH=? and ZWPZK_KJND=?");
-						pst.setInt(1, Integer.parseInt(erpVoucherId));
-						pst.setString(2, gxVoucherId);
-						pst.setString(3, orgNumber);
-						pst.setString(4, year);
-						pst.execute();
-					}
+			String json = result[0].toString();//resultState
+			if (JSONObject.parseObject(json).getBooleanValue("resultState")) {
+				conn = DBUtils.getConnection();
+				if(conn!=null) {
+					pst = conn.prepareStatement("update t_ESB_Voucher set IsRead = 1,erpVoucherId=? where ZWPZK_PZNM=? and ZWPZK_DWBH=? and ZWPZK_KJND=?");
+					pst.setInt(1, Integer.parseInt(erpVoucherId));
+					pst.setString(2, gxVoucherId);
+					pst.setString(3, orgNumber);
+					pst.setString(4, year);
+					pst.execute();
 				}
-				else {
-					Logger.info(((JSONObject) JSON.toJSON(json)).getString("resultMessage"));
-				}
+			}
+			else {
+				Logger.info(JSONObject.parseObject(json).getString("resultMessage"));
 			}
 		} catch (Exception e) {
 			Logger.info(e.getMessage());

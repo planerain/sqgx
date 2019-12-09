@@ -157,7 +157,7 @@ public class VoucherServiceImpl implements VoucherService {
 					Voucher voucher = new Voucher();
 					voucher.setAttachments(rs.getInt(8));
 					voucher.setCashier("NONE");
-					voucher.setDate(rs.getString(5));
+					voucher.setDate(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyyMMdd").parse(rs.getString(5))));
 					voucher.setExplanation(rs.getString(11));
 					voucher.setGroup(orgNumber+rs.getString(7));
 					voucher.setHandler("");

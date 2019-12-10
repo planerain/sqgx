@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.jws.WebService;
 import javax.xml.ws.BindingType;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +57,9 @@ public class VoucherReversalServiceImpl implements VoucherReversalService {
 			String param = "{\"Filter\": \"FVoucherId=" + erpVoucherId + "\"}";
 			String response = HttpUtil.sendPost("http://172.16.7.153/K3API/VoucherData/QueryVoucher?token="
 					+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"), param);
-			JSONObject resObj = JSONObject.parseObject(response).getJSONArray("Data").getJSONObject(1);
+			Logger.info("查询结果："+response);
+			JSONObject resObj = JSONObject.parseObject(response).getJSONArray("Data").getJSONObject(0);
+			Logger.info("凭证内码为"+erpVoucherId+"的凭证信息为:"+resObj.toJSONString());
 			date = resObj.getString("FDate").replace('-', '/');
 			voucherType = resObj.getString("FGroup");
 			voucherNumber = resObj.getIntValue("FNumber");
@@ -68,7 +71,8 @@ public class VoucherReversalServiceImpl implements VoucherReversalService {
 			JSONArray apArray = resObj.getJSONArray("Entries");
 			for (int i = 0; i < apArray.size(); i++) {
 				JSONObject apObj = apArray.getJSONObject(i);
-				apObj.put("FExplanation", "冲"+date+voucherType+"字第"+voucherNumber+"号凭证 "+apObj.getString("FExplanation")==null?"":apObj.getString("FExplanation"));
+				explanation = apObj.getString("FExplanation")==null?"":apObj.getString("FExplanation");
+				apObj.put("FExplanation", "冲"+date+voucherType+"字第"+voucherNumber+"号凭证 "+explanation);
 				apObj.put("FAmount", apObj.getFloatValue("FAmount")*-1);
 				apObj.put("FAmountFor", apObj.getFloatValue("FAmountFor")*-1);
 			}
@@ -80,13 +84,14 @@ public class VoucherReversalServiceImpl implements VoucherReversalService {
 			}
 			Map<String, Object> sendMap = new HashMap<String, Object>();
 			sendMap.put("Replace", "false");
-			sendMap.put("VoucherData", resObj.toJSONString());
+			sendMap.put("VoucherData", resObj);
 			JSONObject sendJson = new JSONObject(sendMap);
+			Logger.info("业务冲销凭证生成数据为:"+StringEscapeUtils.unescapeJava(JSON.toJSONString(sendJson, SerializerFeature.WriteMapNullValue)));
 			// 生成冲销凭证
 			HttpUtil.sendPost(
 					"http://172.16.7.153/K3API/VoucherData/UpdateVoucher?token="
 							+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"),
-					JSON.toJSONString(sendJson, SerializerFeature.WriteMapNullValue));
+							StringEscapeUtils.unescapeJava(JSON.toJSONString(sendJson, SerializerFeature.WriteMapNullValue)));
 		}
 		// 技术冲销
 		if (reverseType.equals("1")) {
@@ -130,7 +135,7 @@ public class VoucherReversalServiceImpl implements VoucherReversalService {
 		    		JSON.toJSONString(sendJson, SerializerFeature.WriteMapNullValue));
 		    // 生成新的凭证
 		    }
-		return null;
+		return "success";
 	}
 
 }

@@ -102,7 +102,7 @@ public class VoucherReversalServiceImpl implements VoucherReversalService {
 		    String param = "{\"Filter\": \"FVoucherId=" + erpVoucherId + "\"}";
 		    String response = HttpUtil.sendPost("http://172.16.7.153/K3API/VoucherData/QueryVoucher?token="
 		    		+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"), param);
-		    JSONObject resObj = JSONObject.parseObject(response).getJSONArray("Data").getJSONObject(1);
+		    JSONObject resObj = JSONObject.parseObject(response).getJSONArray("Data").getJSONObject(0);
 		    date = resObj.getString("FDate").replace('-', '/');
 		    voucherType = resObj.getString("FGroup");
 		    voucherNumber = resObj.getIntValue("FNumber");

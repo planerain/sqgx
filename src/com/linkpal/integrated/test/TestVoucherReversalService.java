@@ -11,7 +11,7 @@ public class TestVoucherReversalService {
 	public static void main(String[] args) {
 		String jsonData = "{\r\n" + 
 				"	\"erpVoucherId\": \"4064\",\r\n" + 
-				"	\"reverseType\": \"0\",\r\n" + 
+				"	\"reverseType\": \"1\",\r\n" + 
 				"	\"reverseDate\": \"2019-12-10\"\r\n" + 
 				"}";
 		JaxWsDynamicClientFactory clientFactory =JaxWsDynamicClientFactory.newInstance();

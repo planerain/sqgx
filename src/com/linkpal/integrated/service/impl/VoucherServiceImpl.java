@@ -52,6 +52,8 @@ public class VoucherServiceImpl implements VoucherService {
 	private ResultSet rs2 = null;
 	private PreparedStatement pst3 = null;
 	private ResultSet rs3 = null;
+	private PreparedStatement pst4 = null;
+	private ResultSet rs4 = null;
 	
 	// 凭证类型
 	String voucherType;
@@ -80,11 +82,11 @@ public class VoucherServiceImpl implements VoucherService {
 		try {
 			conn = DBUtils.getConnection();
 			if(conn!=null) {
-				// 总共47个字段，实际表中需要增加Id(自增)，CreateDate(当前时间)，IsRead(默认为0),erpVoucherId
-				pst=conn.prepareStatement("insert into t_ESB_Voucher(ZWPZK_PZNM,ZWPZK_DWBH,ZWPZK_KJND,ZWPZK_KJQJ,ZWPZK_PZRQ,ZWPZK_PZBH,ZWPZK_LXBH,ZWPZK_FJZS,ZWPZK_ZDR,ZWPZK_TZDZS,ZWPZK_ZY,ZWPZK_JE,CREATEDTIME,ZWPZK_ZDRBH,ZWFZYS_ID,ZWPZFL_KMBH,ZWPZFL_ZY,"
+				// 总共52个字段，实际表中需要增加Id(自增)，CreateDate(当前时间)，IsRead(默认为0),erpVoucherId
+				pst=conn.prepareStatement("insert into t_ESB_Voucher(VoucherID,ZWPZK_DWBH,ZWPZK_KJND,ZWPZK_KJQJ,ZWPZK_PZRQ,ZWPZK_PZBH,ZWPZK_LXBH,ZWPZK_FJZS,ZWPZK_CSR,ZWPZK_CSRMC,ZWPZK_FSR,ZWPZK_FSRMC,ZWPZK_TZDZS,ZWPZK_ZY,ZWPZK_JE,ZWPZK_DJBH,ZWFZYS_WBBH,ZWFZYS_HL,CREATEDTIME,ZWPZK_ZHID,ZWFZYS_ID,ZWPZFL_KMBH,ZWPZFL_ZY,"
 						+ "ZWPZFL_JZFX,ZWFZYS_YSBH,ZWFZYS_BMBH,ZWFZYS_WLDWBH,ZWFZYS_ZGBH,ZWFZYS_CPBH,ZWFZYS_XMBH1,ZWFZYS_XMBH2,ZWFZYS_XMBH3,ZWFZYS_XMBH4,ZWFZYS_XMBH5,ZWFZYS_XMBH6,ZWFZYS_XMBH7,ZWFZYS_XMBH8,ZWFZYS_XMBH9,ZWFZYS_XMBH10,ZWFZYS_XMBH11,ZWFZYS_XMBH12,"
-						+ "ZWFZYS_XMBH13,ZWFZYS_XMBH14,ZWFZYS_XMBH15,ZWFZYS_WBBH,ZWFZYS_SL,ZWFZYS_DJ,ZWFZYS_WB,ZWFZYS_HL,ZWFZYS_JE,ZWFZYS_YWRQ,ZWFZYS_PJH,ZWFZYS_YT) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-				pst.setString(1, voucherDataObj.getString("ZWPZK_PZNM"));
+						+ "ZWFZYS_XMBH13,ZWFZYS_XMBH14,ZWFZYS_XMBH15,ZWFZYS_SL,ZWFZYS_DJ,ZWFZYS_WB,ZWFZYS_JE,ZWFZYS_YWRQ,ZWFZYS_PJH,ZWFZYS_YT,ZWFZYS_FSGLF) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				pst.setString(1, voucherDataObj.getString("VoucherID"));
 				pst.setString(2, voucherDataObj.getString("ZWPZK_DWBH"));
 				pst.setString(3, voucherDataObj.getString("ZWPZK_KJND"));
 				pst.setString(4, voucherDataObj.getString("ZWPZK_KJQJ"));
@@ -92,48 +94,53 @@ public class VoucherServiceImpl implements VoucherService {
 				pst.setString(6, voucherDataObj.getString("ZWPZK_PZBH"));
 				pst.setString(7, voucherDataObj.getString("ZWPZK_LXBH"));
 				pst.setInt(8, voucherDataObj.getIntValue("ZWPZK_FJZS"));
-				pst.setString(9, voucherDataObj.getString("ZWPZK_ZDR"));
-				pst.setInt(10, voucherDataObj.getIntValue("ZWPZK_TZDZS"));
-				pst.setString(11, voucherDataObj.getString("ZWPZK_ZY"));
-				pst.setFloat(12, voucherDataObj.getFloatValue("ZWPZK_JE"));
-				pst.setString(13, voucherDataObj.getString("CREATEDTIME"));
-				pst.setString(14, voucherDataObj.getString("ZWPZK_ZDRBH"));
+				pst.setString(9, voucherDataObj.getString("ZWPZK_CSR"));
+				pst.setString(10, voucherDataObj.getString("ZWPZK_CSRMC"));
+				pst.setString(11, voucherDataObj.getString("ZWPZK_FSR"));
+				pst.setString(12, voucherDataObj.getString("ZWPZK_FSRMC"));
+				pst.setInt(13, voucherDataObj.getIntValue("ZWPZK_TZDZS"));
+				pst.setString(14, voucherDataObj.getString("ZWPZK_ZY"));
+				pst.setFloat(15, voucherDataObj.getFloatValue("ZWPZK_JE"));
+				pst.setString(16, voucherDataObj.getString("ZWPZK_DJBH"));
+				pst.setString(17, voucherDataObj.getString("ZWFZYS_WBBH"));
+				pst.setFloat(18, voucherDataObj.getFloatValue("ZWFZYS_HL"));
+				pst.setString(19, voucherDataObj.getString("CREATEDTIME"));
+				pst.setString(20, voucherDataObj.getString("ZWPZK_ZHID"));
 				JSONArray entries = voucherDataObj.getJSONArray("ZWPZFL");
 				for (int i = 0; i < entries.size(); i++) {
 					JSONObject entryData = entries.getJSONObject(i);
-					pst.setString(15, entryData.getString("ZWFZYS_ID"));
-					pst.setString(16, entryData.getString("ZWPZFL_KMBH"));
-					pst.setString(17, entryData.getString("ZWPZFL_ZY"));
-					pst.setString(18, entryData.getString("ZWPZFL_JZFX"));
-					pst.setString(19, entryData.getString("ZWFZYS_YSBH"));
-					pst.setString(20, entryData.getString("ZWFZYS_BMBH"));
-					pst.setString(21, entryData.getString("ZWFZYS_WLDWBH"));
-					pst.setString(22, entryData.getString("ZWFZYS_ZGBH"));
-					pst.setString(23, entryData.getString("ZWFZYS_CPBH"));
-					pst.setString(24, entryData.getString("ZWFZYS_XMBH1"));
-					pst.setString(25, entryData.getString("ZWFZYS_XMBH2"));
-					pst.setString(26, entryData.getString("ZWFZYS_XMBH3"));
-					pst.setString(27, entryData.getString("ZWFZYS_XMBH4"));
-					pst.setString(28, entryData.getString("ZWFZYS_XMBH5"));
-					pst.setString(29, entryData.getString("ZWFZYS_XMBH6"));
-					pst.setString(30, entryData.getString("ZWFZYS_XMBH7"));
-					pst.setString(31, entryData.getString("ZWFZYS_XMBH8"));
-					pst.setString(32, entryData.getString("ZWFZYS_XMBH9"));
-					pst.setString(33, entryData.getString("ZWFZYS_XMBH10"));
-					pst.setString(34, entryData.getString("ZWFZYS_XMBH11"));
-					pst.setString(35, entryData.getString("ZWFZYS_XMBH12"));
-					pst.setString(36, entryData.getString("ZWFZYS_XMBH13"));
-					pst.setString(37, entryData.getString("ZWFZYS_XMBH14"));
-					pst.setString(38, entryData.getString("ZWFZYS_XMBH15"));
-					pst.setString(39, entryData.getString("ZWFZYS_WBBH"));
-					pst.setFloat(40, entryData.getFloatValue("ZWFZYS_SL"));
-					pst.setFloat(41, entryData.getFloatValue("ZWFZYS_DJ"));
-					pst.setFloat(42, entryData.getFloatValue("ZWFZYS_WB"));
-					pst.setFloat(43, entryData.getFloatValue("ZWFZYS_HL"));
-					pst.setFloat(44, entryData.getFloatValue("ZWFZYS_JE"));
-					pst.setString(45, entryData.getString("ZWFZYS_YWRQ"));
-					pst.setString(46, entryData.getString("ZWFZYS_PJH"));
-					pst.setString(47, entryData.getString("ZWFZYS_YT"));
+					pst.setString(21, entryData.getString("ZWFZYS_ID"));
+					pst.setString(22, entryData.getString("ZWPZFL_KMBH"));
+					pst.setString(23, entryData.getString("ZWPZFL_ZY"));
+					pst.setString(24, entryData.getString("ZWPZFL_JZFX"));
+					pst.setString(25, entryData.getString("ZWFZYS_YSBH"));
+					pst.setString(26, entryData.getString("ZWFZYS_BMBH"));
+					pst.setString(27, entryData.getString("ZWFZYS_WLDWBH"));
+					pst.setString(28, entryData.getString("ZWFZYS_ZGBH"));
+					pst.setString(29, entryData.getString("ZWFZYS_CPBH"));
+					pst.setString(30, entryData.getString("ZWFZYS_XMBH1"));
+					pst.setString(31, entryData.getString("ZWFZYS_XMBH2"));
+					pst.setString(32, entryData.getString("ZWFZYS_XMBH3"));
+					pst.setString(33, entryData.getString("ZWFZYS_XMBH4"));
+					pst.setString(34, entryData.getString("ZWFZYS_XMBH5"));
+					pst.setString(35, entryData.getString("ZWFZYS_XMBH6"));
+					pst.setString(36, entryData.getString("ZWFZYS_XMBH7"));
+					pst.setString(37, entryData.getString("ZWFZYS_XMBH8"));
+					pst.setString(38, entryData.getString("ZWFZYS_XMBH9"));
+					pst.setString(39, entryData.getString("ZWFZYS_XMBH10"));
+					pst.setString(40, entryData.getString("ZWFZYS_XMBH11"));
+					pst.setString(41, entryData.getString("ZWFZYS_XMBH12"));
+					pst.setString(42, entryData.getString("ZWFZYS_XMBH13"));
+					pst.setString(43, entryData.getString("ZWFZYS_XMBH14"));
+					pst.setString(44, entryData.getString("ZWFZYS_XMBH15"));
+					pst.setFloat(45, entryData.getFloatValue("ZWFZYS_SL"));
+					pst.setFloat(46, entryData.getFloatValue("ZWFZYS_DJ"));
+					pst.setFloat(47, entryData.getFloatValue("ZWFZYS_WB"));
+					pst.setFloat(48, entryData.getFloatValue("ZWFZYS_JE"));
+					pst.setString(49, entryData.getString("ZWFZYS_YWRQ"));
+					pst.setString(50, entryData.getString("ZWFZYS_PJH"));
+					pst.setString(51, entryData.getString("ZWFZYS_YT"));
+					pst.setString(52, entryData.getString("ZWFZYS_FSGLF"));
 					pst.execute();
 				}
 			}
@@ -147,7 +154,7 @@ public class VoucherServiceImpl implements VoucherService {
 		try {
 			conn = DBUtils.getConnection();
 			if(conn!=null) {
-				pst = conn.prepareStatement("select distinct top 1 ZWPZK_PZNM,ZWPZK_DWBH,ZWPZK_KJND,ZWPZK_KJQJ,ZWPZK_PZRQ,ZWPZK_PZBH,ZWPZK_LXBH,ZWPZK_FJZS,ZWPZK_ZDR,ZWPZK_TZDZS,ZWPZK_ZY,ZWPZK_JE,CREATEDTIME,ZWPZK_ZDRBH from t_ESB_Voucher where IsRead=0");
+				pst = conn.prepareStatement("select distinct top 1 	VoucherID,ZWPZK_DWBH,ZWPZK_KJND,ZWPZK_KJQJ,ZWPZK_PZRQ,ZWPZK_PZBH,ZWPZK_LXBH,ZWPZK_FJZS,ZWPZK_CSR,ZWPZK_CSRMC,ZWPZK_FSR,ZWPZK_FSRMC,ZWPZK_TZDZS,ZWPZK_ZY,ZWPZK_JE,ZWPZK_DJBH,ZWFZYS_WBBH,ZWFZYS_HL,CREATEDTIME,ZWPZK_ZHID from t_ESB_Voucher where IsRead=0");
 				rs = pst.executeQuery();
 				while (rs.next()) {
 					gxVoucherId = rs.getString(1);
@@ -158,19 +165,22 @@ public class VoucherServiceImpl implements VoucherService {
 					voucher.setAttachments(rs.getInt(8));
 					voucher.setCashier("NONE");
 					voucher.setDate(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyyMMdd").parse(rs.getString(5))));
-					voucher.setExplanation(rs.getString(11));
+					voucher.setExplanation(rs.getString(14));
 					voucher.setGroup(orgNumber+rs.getString(7));
 					voucher.setHandler("");
 					voucher.setNumber(CommonUtil.getNo(orgNumber, voucherType));
-					voucher.setPeriod(Integer.parseInt(rs.getString(4)));
+				    voucher.setPeriod(Integer.parseInt(rs.getString(4))); 
 					voucher.setPoster("NONE");
-					voucher.setPreparer(rs.getString(9));
+					//voucher.setPreparer(rs.getString(9));
+					voucher.setPreparer("");
 					voucher.setReference("");
 					voucher.setSerialNum(0);
 					voucher.setTransDate(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyyMMdd").parse(rs.getString(5))));
 					voucher.setVoucherID(0);
-					voucher.setYear(Integer.parseInt(rs.getString(3)));
-					pst2 = conn.prepareStatement("select ZWFZYS_ID,ZWPZFL_KMBH,ZWPZFL_ZY,ZWPZFL_JZFX,ZWFZYS_YSBH,ZWFZYS_BMBH,ZWFZYS_WLDWBH,ZWFZYS_ZGBH,ZWFZYS_CPBH,ZWFZYS_XMBH1,ZWFZYS_XMBH2,ZWFZYS_XMBH3,ZWFZYS_XMBH4,ZWFZYS_XMBH5,ZWFZYS_XMBH6,ZWFZYS_XMBH7,ZWFZYS_XMBH8,ZWFZYS_XMBH9,ZWFZYS_XMBH10,ZWFZYS_XMBH11,ZWFZYS_XMBH12,ZWFZYS_XMBH13,ZWFZYS_XMBH14,ZWFZYS_XMBH15,ZWFZYS_WBBH,ZWFZYS_SL,ZWFZYS_DJ,ZWFZYS_WB,ZWFZYS_HL,ZWFZYS_JE,ZWFZYS_YWRQ,ZWFZYS_PJH,ZWFZYS_YT from t_ESB_Voucher where ZWPZK_PZNM=? and ZWPZK_DWBH=? and ZWPZK_KJND=?");
+					voucher.setYear(Integer.parseInt(rs.getString(3))); 
+					//voucher.setZWPZK_CSRMC(rs.getString(10));
+					//voucher.setZWPZK_FSRMC(rs.getString(12));
+					pst2 = conn.prepareStatement("select ZWFZYS_ID,ZWPZFL_KMBH,ZWPZFL_ZY,ZWPZFL_JZFX,ZWFZYS_YSBH,ZWFZYS_BMBH,ZWFZYS_WLDWBH,ZWFZYS_ZGBH,ZWFZYS_CPBH,ZWFZYS_XMBH1,ZWFZYS_XMBH2,ZWFZYS_XMBH3,ZWFZYS_XMBH4,ZWFZYS_XMBH5,ZWFZYS_XMBH6,ZWFZYS_XMBH7,ZWFZYS_XMBH8,ZWFZYS_XMBH9,ZWFZYS_XMBH10,ZWFZYS_XMBH11,ZWFZYS_XMBH12,ZWFZYS_XMBH13,ZWFZYS_XMBH14,ZWFZYS_XMBH15,ZWFZYS_SL,ZWFZYS_DJ,ZWFZYS_WB,ZWFZYS_JE,ZWFZYS_YWRQ,ZWFZYS_PJH,ZWFZYS_YT,ZWFZYS_FSGLF,ZWFZYS_WBBH,ZWFZYS_HL from t_ESB_Voucher where  VoucherID=? and ZWPZK_DWBH=? and ZWPZK_KJND=?");
 					pst2.setString(1, gxVoucherId);
 					pst2.setString(2, orgNumber);
 					pst2.setString(3, year);
@@ -181,32 +191,32 @@ public class VoucherServiceImpl implements VoucherService {
 						VoucherBody body = new VoucherBody();
 						body.setAccountName("");
 						body.setAccountNumber(rs2.getString(2));
-						body.setAmount(rs2.getFloat(30)*rs2.getFloat(29));
-						body.setAmountFor(rs2.getFloat(30));
+						body.setAmount(rs2.getFloat(28)*rs2.getFloat(34));
+						body.setAmountFor(rs2.getFloat(28));
 						// 如果外币编号为空，则币别默认为RMB
-						if(rs2.getString(25)==null || rs2.getString(25).equals("")) {
+						if(rs2.getString(33)==null || rs2.getString(33).equals("")) {
 							body.setCurrencyName("人民币");
 							body.setCurrencyNumber("RMB");
 						}else {
 							body.setCurrencyName("");
-							body.setCurrencyNumber(rs2.getString(25));
+							body.setCurrencyNumber(rs2.getString(33));
 						}
 						// 共享 1：借 2：贷		K3 1：借 0：贷
 						if(rs2.getString(4).equals("1")) {
 							body.setDC(1);
-						}else {
+						}else {		
 							body.setDC(0);
 						}
 						body.setEntryId(rs2.getRow()-1);
-						body.setExchangeRate(rs2.getFloat(29));
+						body.setExchangeRate(rs2.getFloat(34));
 						body.setExplanation(rs2.getString(3));
 						body.setMeasureUnit(null);
 						body.setMeasureUnitUUID(null);
-						body.setQuantity(rs2.getFloat(26));
+						body.setQuantity(rs2.getFloat(25));
 						body.setSettleNo(null);
 						body.setSettleTypeName("");
 						body.setTransNo("");
-						body.setUnitPrice(rs2.getFloat(27));
+						body.setUnitPrice(rs2.getFloat(26));
 						
 						List<AccountProject> apList = new ArrayList<AccountProject>();
 						// 部门编号
@@ -259,6 +269,66 @@ public class VoucherServiceImpl implements VoucherService {
 							acctProject.setTypeNumber("004");
 							apList.add(acctProject);
 						}
+						// 项目号(工程项目)
+						if(rs2.getString(11)!=null && !rs2.getString(11).equals("")) {
+							AccountProject acctProject = new AccountProject();
+							acctProject.setDetailName("");
+							acctProject.setDetailNumber(rs2.getString(11));
+							acctProject.setDetailUUID("{" + UUID.randomUUID().toString().toUpperCase() + "}");
+							acctProject.setTypeName("工程项目");
+							acctProject.setTypeNumber("2039");
+							apList.add(acctProject);
+						}
+						// 增减变动
+						if(rs2.getString(12)!=null && !rs2.getString(12).equals("")) {
+							AccountProject acctProject = new AccountProject();
+							acctProject.setDetailName("");
+							acctProject.setDetailNumber(rs2.getString(12));
+							acctProject.setDetailUUID("{" + UUID.randomUUID().toString().toUpperCase() + "}");
+							acctProject.setTypeName("增减变动");
+							acctProject.setTypeNumber("14");
+							apList.add(acctProject);
+						}
+						// 借款性质
+						if(rs2.getString(13)!=null && !rs2.getString(13).equals("")) {
+							AccountProject acctProject = new AccountProject();
+							acctProject.setDetailName("");
+							acctProject.setDetailNumber(rs2.getString(13));
+							acctProject.setDetailUUID("{" + UUID.randomUUID().toString().toUpperCase() + "}");
+							acctProject.setTypeName("借款性质");
+							acctProject.setTypeNumber("");
+							apList.add(acctProject);
+						}
+						// 银行账号
+						if(rs2.getString(14)!=null && !rs2.getString(14).equals("")) {
+							AccountProject acctProject = new AccountProject();
+							acctProject.setDetailName("");
+							acctProject.setDetailNumber(rs2.getString(14));
+							acctProject.setDetailUUID("{" + UUID.randomUUID().toString().toUpperCase() + "}");
+							acctProject.setTypeName("银行账号");
+							acctProject.setTypeNumber("2024");
+							apList.add(acctProject);
+						}
+						// 预算号/技措号/技改号(要素项目)
+						if(rs2.getString(15)!=null && !rs2.getString(15).equals("")) {
+							AccountProject acctProject = new AccountProject();
+							acctProject.setDetailName("");
+							acctProject.setDetailNumber(rs2.getString(15));
+							acctProject.setDetailUUID("{" + UUID.randomUUID().toString().toUpperCase() + "}");
+							acctProject.setTypeName("要素项目");
+							acctProject.setTypeNumber("2035");
+							apList.add(acctProject);
+						}
+						// 内外销(参考段)
+						if(rs2.getString(16)!=null && !rs2.getString(16).equals("")) {
+							AccountProject acctProject = new AccountProject();
+							acctProject.setDetailName("");
+							acctProject.setDetailNumber(rs2.getString(16));
+							acctProject.setDetailUUID("{" + UUID.randomUUID().toString().toUpperCase() + "}");
+							acctProject.setTypeName("参考段");
+							acctProject.setTypeNumber("999");
+							apList.add(acctProject);
+						}
 						
 						body.setAcctList(apList);
 						list.add(body);
@@ -267,20 +337,20 @@ public class VoucherServiceImpl implements VoucherService {
 							CashFlow cashFlow = new CashFlow();
 							cashFlow.setAccName("");
 							cashFlow.setAccNumber(rs2.getString(2));
-							cashFlow.setAmount(rs2.getFloat(30)*rs2.getFloat(29));
-							cashFlow.setAmountFor(rs2.getFloat(30));
+							cashFlow.setAmount(rs2.getFloat(28)*rs2.getFloat(34));
+							cashFlow.setAmountFor(rs2.getFloat(28));
 							cashFlow.setClassName("现金流量项目");
 							cashFlow.setClassNumber("i009");
 							// 如果外币编号为空，则币别默认为RMB
-							if(rs2.getString(25)==null || rs2.getString(25).equals("")) {
+							if(rs2.getString(33)==null || rs2.getString(33).equals("")) {
 								cashFlow.setCurrencyName("人民币");
 								cashFlow.setCurrencyNumber("RMB");
 							}else {
 								cashFlow.setCurrencyName("");
-								cashFlow.setCurrencyNumber(rs2.getString(25));
+								cashFlow.setCurrencyNumber(rs2.getString(33));
 							}
 							cashFlow.setEntryid(rs2.getRow()-1);
-							cashFlow.setEntryid2(Integer.parseInt(rs2.getString(11)));
+							cashFlow.setEntryid2(0);
 							cashFlow.setItemName("");
 							cashFlow.setItemNumber(rs2.getString(10));
 							cashFlow.setSubClassName(null);
@@ -303,6 +373,7 @@ public class VoucherServiceImpl implements VoucherService {
 			DBUtils.closeConnection(conn, pst, rs);
 			DBUtils.closeConnection(conn, pst2, rs2);
 			DBUtils.closeConnection(conn, pst3, rs3);
+			DBUtils.closeConnection(conn, pst4, rs4);
 		}
 		
 		String param = JSON.toJSONString(vd, SerializerFeature.WriteMapNullValue);
@@ -357,7 +428,7 @@ public class VoucherServiceImpl implements VoucherService {
 			if (JSONObject.parseObject(json).getBooleanValue("resultState")) {
 				conn = DBUtils.getConnection();
 				if(conn!=null) {
-					pst = conn.prepareStatement("update t_ESB_Voucher set IsRead = 1,erpVoucherId=? where ZWPZK_PZNM=? and ZWPZK_DWBH=? and ZWPZK_KJND=?");
+					pst = conn.prepareStatement("update t_ESB_Voucher set IsRead = 1,erpVoucherId=? where VoucherId=? and ZWPZK_DWBH=? and ZWPZK_KJND=?");
 					pst.setInt(1, Integer.parseInt(erpVoucherId));
 					pst.setString(2, gxVoucherId);
 					pst.setString(3, orgNumber);
@@ -373,6 +444,6 @@ public class VoucherServiceImpl implements VoucherService {
 		}finally {
 			DBUtils.closeConnection(conn, pst, null);
 		}
-		return "success";
+		return "";
 	}
 }

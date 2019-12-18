@@ -41,6 +41,10 @@ public class VoucherClient {
 	String orgNumber;
 	// 单据编号
 	String billNo;
+	// 共享初审人
+	String firstChecker;
+	// 共享复审人
+	String secondChecker;
 
 	// 每月最后一天晚上22:00触发执行
 	@Scheduled(cron = "0 00 22 28-31 * ?")
@@ -58,13 +62,15 @@ public class VoucherClient {
 					rs1 = pst1.executeQuery();
 					if (rs1.next()) {
 						int VoucherId = rs1.getInt(1);
-						pst2 = conn.prepareStatement("select distinct ZWPZK_PZNM,ZWPZK_DWBH,ZWPZK_ZDRBH from t_ESB_Voucher where erpVoucherId=?");
+						pst2 = conn.prepareStatement("select distinct ZWPZK_PZNM,ZWPZK_DWBH,ZWPZK_DJBH,ZWPZK_CSRMC,ZWPZK_FSRMC from t_ESB_Voucher where erpVoucherId=?");
 						pst2.setInt(1, VoucherId);
 						rs2 = pst2.executeQuery();
 						while (rs2.next()) {
 							gxVoucherId = rs2.getString(1);
 							orgNumber = rs2.getString(2);
 							billNo = rs2.getString(3);
+							firstChecker = rs2.getString(4);
+							secondChecker = rs2.getString(5);
 						}
 						// 发送 GET 请求
 						String authorityCode = "4f03ba08c7d87ece76858af449ad24e0f9a2ad3bafafe148";
@@ -82,6 +88,8 @@ public class VoucherClient {
 						sendJson.put("ZWPZK_PZNM", gxVoucherId);
 						sendJson.put("ZWPZK_DWBH", orgNumber);
 						sendJson.put("ZWPZK_DJBH", billNo);
+						sendJson.put("ZWPZK_DJCS", firstChecker);
+						sendJson.put("ZWPZK_DJFS", secondChecker);
 						
 						JaxWsDynamicClientFactory clientFactory =JaxWsDynamicClientFactory.newInstance();
 						Client client = clientFactory.createClient("http://10.1.100.1:807/InterfaceWebService.asmx?wsdl");

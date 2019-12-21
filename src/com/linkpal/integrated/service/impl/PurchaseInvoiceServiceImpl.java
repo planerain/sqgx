@@ -533,8 +533,8 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 				DBUtils.closeConnection(conn, pst, null);
 			}
 		}
-		Logger.info("返回报文为：");
-		return null;
+		Logger.info("返回报文为："+resultObj.toJSONString());
+		return resultObj.toJSONString();
 	}
 
 }

@@ -19,7 +19,7 @@ import com.linkpal.integrated.util.CommonUtil;
 import com.linkpal.integrated.util.HttpUtil;
 
 /**
- * Description:
+ * Description:凭证冲销
  *
  * @author lichao
  * @date 2019年11月26日 下午1:58:40

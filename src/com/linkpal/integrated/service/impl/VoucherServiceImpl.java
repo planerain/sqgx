@@ -71,7 +71,8 @@ public class VoucherServiceImpl implements VoucherService {
 	String generateMsg;
 	// 生成状态
 	boolean generateFlag;
-	
+	//执行结果码
+	String resultCode;
 	private static final Logger Logger = LoggerFactory.getLogger(VoucherServiceImpl.class);
 
 	@Override
@@ -361,8 +362,7 @@ public class VoucherServiceImpl implements VoucherService {
 						}
 					}
 					voucher.setCashFlow(cfList);
-					voucher.setBodyList(list);
-					
+					voucher.setBodyList(list);					                   
 					vd.setReplace("false");
 					vd.setVoucher(voucher);
 				}
@@ -409,9 +409,11 @@ public class VoucherServiceImpl implements VoucherService {
 				DBUtils.closeConnection(conn, pst, rs);
 			}
 			generateFlag = true;
+			resultCode="01";
 		}else {
 			generateMsg = resultObj.getString("Data");
 			generateFlag = false;
+			resultCode="00";
 		}
 		Calendar calendar = Calendar.getInstance();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -422,6 +424,10 @@ public class VoucherServiceImpl implements VoucherService {
 		resultMap.put("generateFlag", generateFlag);
 		resultMap.put("generateTime", dateFormat.format(calendar.getTime()));
 		JSONObject resultJson = new JSONObject(resultMap);
+		JSONObject responsemessage= new JSONObject();
+		responsemessage.put("resultState",generateFlag);
+		responsemessage.put("resultCode", resultCode);
+		responsemessage.put("resultMessage",generateMsg);
 		try {
 			Object[] result = client.invoke("SetVoucherGenerateResult",resultJson.toJSONString());
 			String json = result[0].toString();//resultState
@@ -444,6 +450,6 @@ public class VoucherServiceImpl implements VoucherService {
 		}finally {
 			DBUtils.closeConnection(conn, pst, null);
 		}
-		return "";
+		return responsemessage.toString();
 	}
 }

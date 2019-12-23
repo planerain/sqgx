@@ -6,17 +6,12 @@ import java.sql.ResultSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.jws.WebService;
 import javax.xml.ws.BindingType;
 
-import org.apache.cxf.endpoint.Client;
-import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -191,7 +186,7 @@ public class VoucherServiceImpl implements VoucherService {
 					while (rs2.next()) {
 						VoucherBody body = new VoucherBody();
 						body.setAccountName("");
-						body.setAccountNumber(rs2.getString(2));
+						body.setAccountNumber(rs2.getString(2).substring(0,4)+"."+rs2.getString(2).substring(4, 6)+"."+rs2.getString(2).substring(6, 8)+"."+rs2.getString(2).substring(8, 10));
 						body.setAmount(rs2.getFloat(28)*rs2.getFloat(34));
 						body.setAmountFor(rs2.getFloat(28));
 						// 如果外币编号为空，则币别默认为RMB
@@ -261,7 +256,7 @@ public class VoucherServiceImpl implements VoucherService {
 							apList.add(acctProject);
 						}
 						// 产品编号
-						if(rs2.getString(9)!=null && !rs2.getString(9).equals("")) {
+						if(rs2.getString(17)!=null && !rs2.getString(17).equals("")) {
 							AccountProject acctProject = new AccountProject();
 							acctProject.setDetailName("");
 							acctProject.setDetailNumber(rs2.getString(9));
@@ -337,7 +332,7 @@ public class VoucherServiceImpl implements VoucherService {
 						if(rs2.getString(10)!=null && !rs2.getString(10).equals("")) {
 							CashFlow cashFlow = new CashFlow();
 							cashFlow.setAccName("");
-							cashFlow.setAccNumber(rs2.getString(2));
+							cashFlow.setAccNumber(rs2.getString(2).substring(0,4)+"."+rs2.getString(2).substring(4, 6)+"."+rs2.getString(2).substring(6, 8)+"."+rs2.getString(2).substring(8, 10));
 							cashFlow.setAmount(rs2.getFloat(28)*rs2.getFloat(34));
 							cashFlow.setAmountFor(rs2.getFloat(28));
 							cashFlow.setClassName("现金流量项目");
@@ -379,17 +374,17 @@ public class VoucherServiceImpl implements VoucherService {
 		String param = JSON.toJSONString(vd, SerializerFeature.WriteMapNullValue);
 		Logger.info("向接口发送的数据为:"+param);
 		// 发送 GET 请求
-		String authorityCode = "4f03ba08c7d87ece76858af449ad24e0f9a2ad3bafafe148";
-		String token = HttpUtil.sendGet("http://172.16.7.153/K3API/Token/Create", "authorityCode=" + authorityCode);
+		String authorityCode = "cc7c2a733c0a29ece004ca4aaa31fa27a349134496f8c1d0";
+		String token = HttpUtil.sendGet("http://172.16.7.191/K3API/Token/Create", "authorityCode=" + authorityCode);
 				
 		// 发送POST请求
-		String response = HttpUtil.sendPost("http://172.16.7.153/K3API/VoucherData/UpdateVoucher?token="
+		String response = HttpUtil.sendPost("http://172.16.7.191/K3API/VoucherData/UpdateVoucher?token="
 						+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"), param);
-		JaxWsDynamicClientFactory clientFactory =JaxWsDynamicClientFactory.newInstance();
-		Client client = clientFactory.createClient("http://172.16.2.139/cwbase/service/jzstandiface/VoucherGenerateResultService.asmx?wsdl");
+		//JaxWsDynamicClientFactory clientFactory =JaxWsDynamicClientFactory.newInstance();
+		//Client client = clientFactory.createClient("http://172.16.2.139/cwbase/service/jzstandiface/VoucherGenerateResultService.asmx?wsdl");
 		JSONObject resultObj = JSONObject.parseObject(response);
 		Logger.info("生成状态:"+resultObj.getString("Data"));
-		Map<String, Object> resultMap = new HashMap<String, Object>();
+		//Map<String, Object> resultMap = new HashMap<String, Object>();
 		if(resultObj.getIntValue("StatusCode") == 200) {
 			// 此处去数据库读取数据
 			erpVoucherId = resultObj.getString("Data").substring(12);
@@ -415,23 +410,37 @@ public class VoucherServiceImpl implements VoucherService {
 			generateFlag = false;
 			resultCode="00";
 		}
-		Calendar calendar = Calendar.getInstance();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		resultMap.put("voucherId", gxVoucherId);
-		resultMap.put("erpVoucherCode", erpVoucherCode);
-		resultMap.put("erpVoucherId", erpVoucherId);
-		resultMap.put("generateMsg", generateMsg);
-		resultMap.put("generateFlag", generateFlag);
-		resultMap.put("generateTime", dateFormat.format(calendar.getTime()));
-		JSONObject resultJson = new JSONObject(resultMap);
+		//Calendar calendar = Calendar.getInstance();
+		//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		//resultMap.put("voucherId", gxVoucherId);
+		//resultMap.put("erpVoucherCode", erpVoucherCode);
+		//resultMap.put("erpVoucherId", erpVoucherId);
+		//resultMap.put("generateMsg", generateMsg);
+		//resultMap.put("generateFlag", generateFlag);
+		//resultMap.put("generateTime", dateFormat.format(calendar.getTime()));
+		//JSONObject resultJson = new JSONObject(resultMap);
 		JSONObject responsemessage= new JSONObject();
 		responsemessage.put("resultState",generateFlag);
 		responsemessage.put("resultCode", resultCode);
 		responsemessage.put("resultMessage",generateMsg);
 		try {
-			Object[] result = client.invoke("SetVoucherGenerateResult",resultJson.toJSONString());
-			String json = result[0].toString();//resultState
-			if (JSONObject.parseObject(json).getBooleanValue("resultState")) {
+			//Object[] result = client.invoke("SetVoucherGenerateResult",resultJson.toJSONString());
+			//String json = result[0].toString();//resultState
+//			if (JSONObject.parseObject(json).getBooleanValue("resultState")) {
+//				conn = DBUtils.getConnection();
+//				if(conn!=null) {
+//					pst = conn.prepareStatement("update t_ESB_Voucher set IsRead = 1,erpVoucherId=? where VoucherId=? and ZWPZK_DWBH=? and ZWPZK_KJND=?");
+//					pst.setInt(1, Integer.parseInt(erpVoucherId));
+//					pst.setString(2, gxVoucherId);
+//					pst.setString(3, orgNumber);
+//					pst.setString(4, year);
+//					pst.execute();
+//				}
+//			}
+//			else {
+//				Logger.info(JSONObject.parseObject(json).getString("resultMessage"));
+//			}
+			if(resultCode.equalsIgnoreCase("01")) {
 				conn = DBUtils.getConnection();
 				if(conn!=null) {
 					pst = conn.prepareStatement("update t_ESB_Voucher set IsRead = 1,erpVoucherId=? where VoucherId=? and ZWPZK_DWBH=? and ZWPZK_KJND=?");
@@ -441,9 +450,6 @@ public class VoucherServiceImpl implements VoucherService {
 					pst.setString(4, year);
 					pst.execute();
 				}
-			}
-			else {
-				Logger.info(JSONObject.parseObject(json).getString("resultMessage"));
 			}
 		} catch (Exception e) {
 			Logger.info(e.getMessage());

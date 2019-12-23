@@ -45,4 +45,11 @@
     </jaxws:server>
     <bean id="VoucherReversalService" class="com.linkpal.integrated.service.impl.VoucherReversalServiceImpl"></bean>
     
+    <!-- 应收单对接  -->
+    <jaxws:server address="/purchaseInvoice" serviceClass="com.linkpal.integrated.service.PurchaseInvoiceService">
+        <jaxws:serviceBean>
+            <ref bean="PurchaseInvoiceService"/>
+        </jaxws:serviceBean>
+    </jaxws:server>
+    <bean id="PurchaseInvoiceService" class="com.linkpal.integrated.service.impl.PurchaseInvoiceServiceImpl"></bean>
 </beans>

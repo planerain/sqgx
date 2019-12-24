@@ -1,6 +1,7 @@
 package com.linkpal.integrated.service;
 
 import javax.jws.WebMethod;
+import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.xml.ws.BindingType;
@@ -12,9 +13,9 @@ import javax.xml.ws.BindingType;
  * @date 2019年12月19日 上午10:12:54
  *
  */
-@WebService
+@WebService(serviceName = "PurchaseInvoiceService")
 @BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
 public interface PurchaseInvoiceService {
 	@WebMethod
-	public @WebResult(name = "purchaseInvoiceData") String getPurchaseInvoiceData(String purchaseInvoiceData);
+	public @WebResult(name = "purchaseInvoiceData") String getPurchaseInvoiceData(@WebParam(name = "purchaseInvoiceData") String purchaseInvoiceData);
 }

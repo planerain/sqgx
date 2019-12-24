@@ -37,7 +37,7 @@ import com.linkpal.integrated.util.HttpUtil;
     *     实现思路:先接收ESB传过来的数据存入中间表(t_ESB_Voucher),再去中间表读取数据
  *
  */
-@WebService
+@WebService(serviceName = "VoucherService")
 @BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
 public class VoucherServiceImpl implements VoucherService {
 	private Connection conn = null;

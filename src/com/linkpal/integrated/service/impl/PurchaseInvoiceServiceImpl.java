@@ -27,7 +27,7 @@ import com.linkpal.integrated.util.HttpUtil;
  * 
  * 接收过来的数据先存入中间表()，然后从中间表读取数据
  */
-@WebService
+@WebService(serviceName = "PurchaseInvoiceService")
 @BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
 public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 	private Connection conn = null;

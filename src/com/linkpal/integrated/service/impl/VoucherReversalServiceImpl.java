@@ -25,7 +25,7 @@ import com.linkpal.integrated.util.HttpUtil;
  * @date 2019年11月26日 下午1:58:40
  *
  */
-@WebService
+@WebService(serviceName = "VoucherReversalService")
 @BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
 public class VoucherReversalServiceImpl implements VoucherReversalService {
 	private static final Logger Logger = LoggerFactory.getLogger(VoucherReversalServiceImpl.class);

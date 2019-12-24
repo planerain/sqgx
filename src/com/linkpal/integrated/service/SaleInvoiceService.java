@@ -7,15 +7,15 @@ import javax.jws.WebService;
 import javax.xml.ws.BindingType;
 
 /**
- * Description:
+ * Description:应收单接口
  *
  * @author lichao
- * @date 2019年11月26日 下午1:54:24
+ * @date 2019年12月19日 上午10:12:54
  *
  */
-@WebService(serviceName = "VoucherReversalService")
+@WebService(serviceName = "SaleInvoiceService")
 @BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
-public interface VoucherReversalService {
+public interface SaleInvoiceService {
 	@WebMethod
-	public @WebResult(name = "voucherReversalData") String getVoucherReversalData(@WebParam(name = "voucherReversalData") String voucherReversalData);
+	public @WebResult(name = "saleInvoiceData") String getSaleInvoiceData(@WebParam(name = "saleInvoiceData") String saleInvoiceData);
 }

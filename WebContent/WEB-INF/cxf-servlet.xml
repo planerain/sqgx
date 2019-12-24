@@ -3,15 +3,18 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
     xmlns:soap="http://cxf.apache.org/bindings/soap" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
     xmlns:task="http://www.springframework.org/schema/task" xmlns:context="http://www.springframework.org/schema/context"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    					http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                        http://www.springframework.org/schema/context 
+                        http://www.springframework.org/schema/context/spring-context-4.3.xsd
                         http://cxf.apache.org/bindings/soap 
                         http://cxf.apache.org/schemas/configuration/soap.xsd
                         http://cxf.apache.org/jaxws 
                         http://cxf.apache.org/schemas/jaxws.xsd
                         http://cxf.apache.org/jaxrs 
                         http://cxf.apache.org/schemas/jaxrs.xsd
-                        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+                        http://www.springframework.org/schema/task 
+                        http://www.springframework.org/schema/task/spring-task-4.3.xsd
                         ">
     <!-- 
         jaxws:server代表org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean，服务实例工厂
@@ -45,11 +48,19 @@
     </jaxws:server>
     <bean id="VoucherReversalService" class="com.linkpal.integrated.service.impl.VoucherReversalServiceImpl"></bean>
     
-    <!-- 应收单对接  -->
+    <!-- 应付单对接  -->
     <jaxws:server address="/purchaseInvoice" serviceClass="com.linkpal.integrated.service.PurchaseInvoiceService">
         <jaxws:serviceBean>
             <ref bean="PurchaseInvoiceService"/>
         </jaxws:serviceBean>
     </jaxws:server>
     <bean id="PurchaseInvoiceService" class="com.linkpal.integrated.service.impl.PurchaseInvoiceServiceImpl"></bean>
+    
+    <!-- 应收单对接  -->
+    <jaxws:server address="/saleInvoice" serviceClass="com.linkpal.integrated.service.SaleInvoiceService">
+        <jaxws:serviceBean>
+            <ref bean="SaleInvoiceService"/>
+        </jaxws:serviceBean>
+    </jaxws:server>
+    <bean id="SaleInvoiceService" class="com.linkpal.integrated.service.impl.SaleInvoiceServiceImpl"></bean>
 </beans>

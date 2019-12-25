@@ -429,9 +429,9 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 						// 整单折前金额(本位币)
 						page3JsonObj.put("FStdAmountExceptDisCount", rs.getFloat(8)*rs.getFloat(5));
 						// 金额
-						page3JsonObj.put("FAmount3", rs2.getFloat(6));
+						page3JsonObj.put("FAmount3", rs2.getFloat(6)-rs2.getFloat(9));
 						// 金额(本位币)
-						page3JsonObj.put("FStdAmount", rs2.getFloat(6)*rs.getFloat(5));
+						page3JsonObj.put("FStdAmount", (rs2.getFloat(6)-rs2.getFloat(9))*rs.getFloat(5));
 						// 基本单价
 						page3JsonObj.put("FPrice", rs2.getFloat(4));
 						// 基本单位数量
@@ -496,9 +496,9 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 						// 累计核销金额(本位币)
 						page3JsonObj.put("FCheckAmount", 0);
 						// 未核销金额
-						page3JsonObj.put("FRemainAmountForEntry", rs2.getFloat(6));
+						page3JsonObj.put("FRemainAmountForEntry", rs2.getFloat(6)-rs2.getFloat(9));
 						// 未核销金额(本位币)
-						page3JsonObj.put("FRemainAmountEntry", rs2.getFloat(6)*rs.getFloat(5));
+						page3JsonObj.put("FRemainAmountEntry", (rs2.getFloat(6)-rs2.getFloat(9))*rs.getFloat(5));
 						// 累计核销数量
 						page3JsonObj.put("FCheckQty", 0);
 						// 未核销数量

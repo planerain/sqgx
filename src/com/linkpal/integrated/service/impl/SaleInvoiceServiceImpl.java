@@ -48,7 +48,7 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 			conn = DBUtils.getConnection();
 			if(conn!=null) {
 				pst = conn.prepareStatement("insert into t_ESB_SaleInvoice(RKJS_NM,RKJS_DJBH,RKJS_RQ,RKJS_DWBH,"
-						+ "RKJS_ZDRYGBH,RKJS_JSHJ,JSMX_NM,JSMX_GYSBH,JSMX_ZY,JSMX_FPHM,JSMX_SFID,JSMX_WLBH,JSMX_SL,"
+						+ "RKJS_ZDRYGBH,RKJS_JSHJ,RKJS_ZY,JSMX_NM,JSMX_GYSBH,JSMX_FPHM,JSMX_SFID,JSMX_WLBH,JSMX_SL,"
 						+ "JSMX_SLDW,JSMX_DJ,JSMX_SLV,JSMX_SE,JSMX_JSHJ,JSMX_BZ,JSMX_HLV,JSMX_GLRQ,JSMX_JSKJ,JSMX_ZHKM,"
 						+ "JSMX_HH,JSMX_HLLX,JSMX_CSRQ,JSMX_ZKJC,JSMX_MIXNUMBER,JSMX_GXM1,JSMX_GXM9,JSMX_GNM1,JSMX_GNM2,"
 						+ "JSMX_GNM7,JSMX_SZ2,JSMX_GBZ3) "
@@ -59,12 +59,12 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 				pst.setString(4, saleInvoiceDataDataObj.getString("RKJS_DWBH"));
 				pst.setString(5, saleInvoiceDataDataObj.getString("RKJS_ZDRYGBH"));
 				pst.setFloat(6, saleInvoiceDataDataObj.getFloatValue("RKJS_JSHJ"));
+				pst.setString(7, saleInvoiceDataDataObj.getString("RKJS_ZY"));
 				JSONArray entries = saleInvoiceDataDataObj.getJSONArray("JSMX");
 				for (int i = 0; i < entries.size(); i++) {
 					JSONObject entryData = entries.getJSONObject(i);
-					pst.setString(7, entryData.getString("JSMX_NM"));
-					pst.setString(8, entryData.getString("JSMX_GYSBH"));
-					pst.setString(9, entryData.getString("JSMX_ZY"));
+					pst.setString(8, entryData.getString("JSMX_NM"));
+					pst.setString(9, entryData.getString("JSMX_GYSBH"));
 					pst.setString(10, entryData.getString("JSMX_FPHM"));
 					pst.setString(11, entryData.getString("JSMX_SFID"));
 					pst.setString(12, entryData.getString("JSMX_WLBH"));
@@ -332,7 +332,7 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 					page2JsonObj.put("FRP",1);
 					page2Array.add(page2JsonObj);
 					
-					pst2 = conn.prepareStatement("select  from t_ESB_PurchaseInvoice where RKJS_MIXNUMBER=?");
+					pst2 = conn.prepareStatement("select JSMX_WLBH,JSMX_SL,JSMX_SLDW,JSMX_JSHJ,JSMX_DJ,JSMX_SLV,JSMX_ZKJC,JSMX_HH,JSMX_SE,JSMX_GNM7,JSMX_GNM2,JSMX_SFID,JSMX_GBZ3,JSMX_GXM9 from t_ESB_SaleInvoice where JSMX_MIXNUMBER=?");
 					pst2.setString(1, billNo);
 					rs2 = pst2.executeQuery();
 					while (rs2.next()) {
@@ -341,7 +341,7 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 						page3JsonObj.put("FEntrySelfI0470","");
 						// 产品代码
 						JSONObject  FItemObj = new JSONObject();
-						FItemObj.put("FNumber","QT.0007");
+						FItemObj.put("FNumber",rs2.getString(1));
 						FItemObj.put("FName","");
 						page3JsonObj.put("FItemID",FItemObj );
 						// 产品名称
@@ -349,145 +349,155 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 						// 规格型号
 						page3JsonObj.put("FItemID36436","");
 						// 行号
-						page3JsonObj.put("FEntryID3","");
+						page3JsonObj.put("FEntryID3",rs2.getRow());
 						// 辅助属性
 						JSONObject  FAuxPropObj = new JSONObject();
 						FAuxPropObj.put("FNumber","");
 						FAuxPropObj.put("FName","");
 						page3JsonObj.put("FAuxPropID",FAuxPropObj);
 						// 已开发票数量
-						page3JsonObj.put("FHasInvoiceQty", 0.00);
-						// 单位
+						page3JsonObj.put("FHasInvoiceQty", rs2.getFloat(2));
+						// 单位 ************
 						JSONObject  FUnitObj = new JSONObject();
 						FUnitObj.put("FNumber","");
-						FUnitObj.put("FName","");
+						FUnitObj.put("FName",rs2.getString(3));
 						page3JsonObj.put("FUnitID",FUnitObj);
 						// 数量
-						page3JsonObj.put("FAuxQty",0.00);
+						page3JsonObj.put("FAuxQty",rs2.getFloat(2));
 						// 已开发票金额
-						page3JsonObj.put("FHasInvoiceAmount",0.0000000000);
+						page3JsonObj.put("FHasInvoiceAmount",rs2.getFloat(4));
 						// 付款申请关联数量
-						page3JsonObj.put("FQuantityPayApply_Commit",0.0000000000);
+						page3JsonObj.put("FQuantityPayApply_Commit",0.0);
 						// 收付款关联数量
-						page3JsonObj.put("FQuantityReceive_Commit",0.0000000000);
+						page3JsonObj.put("FQuantityReceive_Commit",rs2.getFloat(2));
 						// 辅助单位
 						JSONObject  FSecUnitObj = new JSONObject();
 						FSecUnitObj.put("FNumber","");
 						FSecUnitObj.put("FName","");
 						page3JsonObj.put("FSecUnitID",FSecUnitObj);
 						// 换算率
-						page3JsonObj.put("FsecCoefficient",0.0000000000);
+						page3JsonObj.put("FsecCoefficient",0.0);
 						// 辅助单位数量
-						page3JsonObj.put("FSecQty",0.0000000000);
+						page3JsonObj.put("FSecQty",0.0);
 						// 单价
-						page3JsonObj.put("FAuxPrice",0.0000000000);
+						page3JsonObj.put("FAuxPrice",rs2.getFloat(5));
 						// 含税单价
-						page3JsonObj.put("FAuxTaxPrice",0.0000000000);
+						page3JsonObj.put("FAuxTaxPrice",rs2.getFloat(5)*(1+rs2.getFloat(6)));
 						// 折扣率(％)
-						page3JsonObj.put("FDiscountRate",0.0000000000);
+						page3JsonObj.put("FDiscountRate",rs2.getFloat(7)/rs2.getFloat(4)*100);
 						// 源单内码
 						page3JsonObj.put("FSourceInterId",0);
 						// 实际含税单价
-						page3JsonObj.put("FPriceDiscount",0.0000000000);
+						if(rs2.getFloat(7)==0.0) {
+							page3JsonObj.put("FPriceDiscount",rs2.getFloat(5)*(1+rs2.getFloat(6)));
+						}else {
+							page3JsonObj.put("FPriceDiscount",rs2.getFloat(5)*(1+rs2.getFloat(6))*(rs2.getFloat(7)/rs2.getFloat(4)));
+						}
 						// 折扣额
-					    page3JsonObj.put("FAmtDiscount",0.0000);
+					    page3JsonObj.put("FAmtDiscount",rs2.getFloat(7));
 						// 折扣额（本位币）
-					    page3JsonObj.put("FStdAmtDiscount",0.0000);
+					    page3JsonObj.put("FStdAmtDiscount",rs2.getFloat(7)*rs.getFloat(4));
 						// 金额
-					    page3JsonObj.put("FAmount3",7300.0000000000);
+					    page3JsonObj.put("FAmount3",rs2.getFloat(4)-rs2.getFloat(7));
 						// 基本单价
-					    page3JsonObj.put("FPrice",0.0000000000);
+					    page3JsonObj.put("FPrice",rs2.getFloat(5));
 						// 含税价
-					    page3JsonObj.put("FTaxPrice",0.0000000000);
+					    page3JsonObj.put("FTaxPrice",rs2.getFloat(5)*(1+rs2.getFloat(6)));
 						// 金额（本位币）
-					    page3JsonObj.put("FStdAmount",7300.0000);
+					    page3JsonObj.put("FStdAmount",(rs2.getFloat(4)-rs2.getFloat(7))*rs.getFloat(4));
 						// 合同行号
 					    page3JsonObj.put("FContractEntryID",0);
 						// 源分录ID
-					    page3JsonObj.put("FEntryID_SRC",0);
+					    page3JsonObj.put("FEntryID_SRC",rs2.getInt(8));
 						// 税率(％)
-					    page3JsonObj.put("FTaxRate",0.0000000000);
+					    page3JsonObj.put("FTaxRate",rs2.getFloat(6)*100);
 						// 订单行号
 					    page3JsonObj.put("FOrderEntryID",0);
 						// 订单内码
 					    page3JsonObj.put("FOrderInterID",0);
 						// 税额
-					    page3JsonObj.put("FTaxAmount",0.0000000000);
+					    page3JsonObj.put("FTaxAmount",rs2.getFloat(9));
 						// 自由项1
 					    page3JsonObj.put("FFreeItem3_3","");
 						// 自由项2
 					    page3JsonObj.put("FFreeItem4_3","");
 						// 税额（本位币）
-					    page3JsonObj.put("FStdTaxAmount",0.0000);
+					    page3JsonObj.put("FStdTaxAmount",rs2.getFloat(9)*rs.getFloat(4));
 						// 价税合计
-					    page3JsonObj.put("FAmountIncludeTax", 7300.0000000000);
+					    page3JsonObj.put("FAmountIncludeTax", rs2.getFloat(4));
 						// 价税合计（本位币）
-					    page3JsonObj.put("FStdAmountIncludeTax",7300.0000000000);
+					    page3JsonObj.put("FStdAmountIncludeTax",rs2.getFloat(4)*rs.getFloat(4));
 						// 备注
 					    page3JsonObj.put("FNote_3","");
 						// 批号
-					    page3JsonObj.put("FBatchNo","");
+					    page3JsonObj.put("FBatchNo",rs2.getString(10));
 						// 基本单位
-					    page3JsonObj.put("FBaseUnit","个");
+					    page3JsonObj.put("FBaseUnit","");
 						// 基本单位数量
-					    page3JsonObj.put("FQty", 0.0000000000);
+					    page3JsonObj.put("FQty", rs2.getFloat(2));
 						// 订单单价
-					    page3JsonObj.put("FAuxOrderPrice", 0.0000000000);
+					    page3JsonObj.put("FAuxOrderPrice", 0.00);
 						// 基本计量单位订单单价
-					    page3JsonObj.put("FOrderPrice", 0.0000000000);
+					    page3JsonObj.put("FOrderPrice", 0.00);
 						// 源单类型
 						JSONObject  FClass_SRCObj = new JSONObject();
 						FClass_SRCObj.put("FNumber","");
 						FClass_SRCObj.put("FName","");
 						page3JsonObj.put("FClassID_SRC", FClass_SRCObj);
 						// 源单单号
-						page3JsonObj.put("FSourceBillNo","");
+						page3JsonObj.put("FSourceBillNo",rs2.getString(11));
 						// 合同号
 						page3JsonObj.put("FContractBillNo","");
 						// 销售订单号
 						page3JsonObj.put("FOrderBillNo","");
 						// 累计已核销已关联金额
-						page3JsonObj.put("FLinkCheckAmountFor",0.0000);
+						page3JsonObj.put("FLinkCheckAmountFor",0.00);
 						// 累计已核销已关联金额(本位币)
-						page3JsonObj.put("FLinkCheckAmount",0.0000);
+						page3JsonObj.put("FLinkCheckAmount",0.00);
 						// 累计核销金额
-						page3JsonObj.put("FCheckAmountFor",7300.0000);
+						page3JsonObj.put("FCheckAmountFor",0.00);
 						// 累计核销金额(本位币)
-						page3JsonObj.put("FCheckAmount",7300.0000);
+						page3JsonObj.put("FCheckAmount",0.00);
 						// 未核销金额
-						page3JsonObj.put("FRemainAmountForEntry",0.0000);
+						page3JsonObj.put("FRemainAmountForEntry",rs2.getFloat(4));
 						// 累计已核销已关联数量
-						page3JsonObj.put("FLinkCheckQty", 0.0000000000);
+						page3JsonObj.put("FLinkCheckQty", 0.00);
 						// 未核销金额(本位币)
-						page3JsonObj.put("FRemainAmountEntry",0.0000);
+						page3JsonObj.put("FRemainAmountEntry",rs2.getFloat(4)*rs.getFloat(4));
 						// 累计核销数量
-						page3JsonObj.put("FCheckQty", 0.0000000000);
+						page3JsonObj.put("FCheckQty", 0.00);
 						// 未核销数量
-						page3JsonObj.put("FRemainQty", 0.0000000000);
+						page3JsonObj.put("FRemainQty", rs2.getFloat(2));
 						// 收款关联金额
-						page3JsonObj.put("FAmountFor_Commit",0.0000);
+						page3JsonObj.put("FAmountFor_Commit",0.00);
 						// 收款关联金额(本位币)
-						page3JsonObj.put("FAmount_Commit",0.0000);
+						page3JsonObj.put("FAmount_Commit",0.00);
 						// 红字发票已关联已核销金额(本位币)
-						page3JsonObj.put("FInvLinkCheckAmount","");
+						page3JsonObj.put("FInvLinkCheckAmount",0.00);
 						// 红字发票关联金额(本位币)
-						page3JsonObj.put("FInvoiceAmount",0.0000);
+						page3JsonObj.put("FInvoiceAmount",0.00);
 						// 红字发票关联金额(原币)
-						page3JsonObj.put("FInvoiceAmountFor",0.0000);
+						page3JsonObj.put("FInvoiceAmountFor",0.00);
 						// 红字发票已关联已核销金额(原币)
-						page3JsonObj.put("FInvLinkCheckAmountFor",0.0000);
+						page3JsonObj.put("FInvLinkCheckAmountFor",0.00);
 						// 红字发票已关联已核销数量
-						page3JsonObj.put("FInvLinkCheckQty",0.0000);
+						page3JsonObj.put("FInvLinkCheckQty",0.00);
 						// 红字发票关联数量
-						page3JsonObj.put("FInvoiceQty",0.0000000000);
+						page3JsonObj.put("FInvoiceQty",0.00);
 						// 源单类型
 						page3JsonObj.put("FSourceTranType",0);
 						// 对账确认意见(表体)
 						page3JsonObj.put("FConfirmAdviceEntry","");
 						// 源单分录
-						page3JsonObj.put("FSourceEntryID",0);
+						page3JsonObj.put("FSourceEntryID",rs2.getInt(8));
 						// 网店订单号
 						page3JsonObj.put("FOnLineOrderNo","");
+						// 合同小号/合同号
+						page3JsonObj.put("FEntrySelfI0473",rs2.getString(12));
+						// 任务号
+						page3JsonObj.put("FEntrySelfI0474",rs2.getString(13));
+						// 计生号JSH
+						page3JsonObj.put("FEntrySelfI0475",rs2.getString(14));
 						page3Array.add(page3JsonObj);
 					}
 				}

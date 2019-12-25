@@ -58,17 +58,17 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 				pst.setString(3, purchaseInvoiceDataObj.getString("RKJS_MIXNUMBER"));
 				pst.setString(4, purchaseInvoiceDataObj.getString("RKJS_RQ"));
 				pst.setString(5, purchaseInvoiceDataObj.getString("RKJS_DWBH"));
-				pst.setFloat(6, purchaseInvoiceDataObj.getFloatValue("RKJS_BMBH"));
+				pst.setString(6, purchaseInvoiceDataObj.getString("RKJS_BMBH"));
 				pst.setString(7, purchaseInvoiceDataObj.getString("RKJS_ZDRYGBH"));
 				pst.setString(8, purchaseInvoiceDataObj.getString("RKJS_CSR"));
-				pst.setString(9, purchaseInvoiceDataObj.getString("RKJS_CSRQ"));
+				pst.setString(9, purchaseInvoiceDataObj.getString("RKJS_CSRQ")==null?"":purchaseInvoiceDataObj.getString("RKJS_CSRQ"));
 				pst.setString(10, purchaseInvoiceDataObj.getString("RKJS_JHR"));
-				pst.setString(11, purchaseInvoiceDataObj.getString("RKJS_JHRQ"));
+				pst.setString(11, purchaseInvoiceDataObj.getString("RKJS_JHRQ")==null?"":purchaseInvoiceDataObj.getString("RKJS_JHRQ"));
 				pst.setString(12, purchaseInvoiceDataObj.getString("RKJS_FHR"));
-				pst.setString(13, purchaseInvoiceDataObj.getString("RKJS_FHRQ"));
+				pst.setString(13, purchaseInvoiceDataObj.getString("RKJS_FHRQ")==null?"":purchaseInvoiceDataObj.getString("RKJS_FHRQ"));
 				pst.setString(14, purchaseInvoiceDataObj.getString("RKJS_ZY"));
 				pst.setInt(15, purchaseInvoiceDataObj.getIntValue("RKJS_FJZS"));
-				pst.setFloat(16, purchaseInvoiceDataObj.getFloatValue("RKJS_JSHJFPJE"));
+				pst.setFloat(16, purchaseInvoiceDataObj.getFloatValue("RKJS_JSHJ"));
 				JSONArray entries = purchaseInvoiceDataObj.getJSONArray("JSMX");
 				for (int i = 0; i < entries.size(); i++) {
 					JSONObject entryData = entries.getJSONObject(i);
@@ -91,7 +91,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 					pst.setString(33, entryData.getString("JSMX_BZ"));
 					pst.setFloat(34, entryData.getFloatValue("JSMX_HLV"));
 					pst.setString(35, entryData.getString("JSMX_RKRQ"));
-					pst.setString(36, entryData.getString("JSMX_GLRQ"));
+					pst.setString(36, entryData.getString("JSMX_GLRQ")==null?"":entryData.getString("JSMX_GLRQ"));
 					pst.setString(37, entryData.getString("JSMX_JSKJ"));
 					pst.setString(38, entryData.getString("JSMX_ZHKM"));
 					pst.setString(39, entryData.getString("JSMX_RZZT"));
@@ -105,11 +105,11 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 					pst.setString(47, entryData.getString("JSMX_FKBZ"));
 					pst.setString(48, entryData.getString("JSMX_OU"));
 					pst.setString(49, entryData.getString("JSMX_HLLX"));
-					pst.setString(50, entryData.getString("JSMX_HLRQ"));
+					pst.setString(50, entryData.getString("JSMX_HLRQ")==null?"":entryData.getString("JSMX_HLRQ"));
 					pst.setFloat(51, entryData.getFloatValue("JSMX_FPHJE"));
 					pst.setString(52, entryData.getString("JSMX_COMPANY"));
 					pst.setString(53, entryData.getString("JSMX_BM"));
-					pst.setString(54, entryData.getString("JSMX_CSRQ"));
+					pst.setString(54, entryData.getString("JSMX_CSRQ")==null?"":entryData.getString("JSMX_CSRQ"));
 					pst.execute();
 				}
 			}
@@ -161,18 +161,18 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 					page1JsonObj.put("FExchangeRateType", exchangeRateTypeObj);
 					// 事务类型
 					page1JsonObj.put("FClassTypeID", 1000004);
-					// 币别
+					// 币别  ************
 					JSONObject currencyObj = new JSONObject();
-					currencyObj.put("FNumber",rs.getString(4));
-					currencyObj.put("FName","");
+					currencyObj.put("FNumber","");
+					currencyObj.put("FName",rs.getString(4));
 					page1JsonObj.put("FCurrencyID", currencyObj);
 					// 汇率
 					page1JsonObj.put("FExchangeRate", rs.getFloat(5));
 					// 年利率(％)
 					page1JsonObj.put("FInterestRate", 0.0);
-					// 往来科目
+					// 往来科目  ************ rs.getString(6) 
 					JSONObject acttObj = new JSONObject();
-					acttObj.put("FNumber",rs.getString(6));
+					acttObj.put("FNumber","1123.01");
 					acttObj.put("FName","");
 					page1JsonObj.put("FAcctID", acttObj);
 					// 调整汇率
@@ -199,15 +199,15 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 					deptObj.put("FNumber",rs.getString(9));
 					deptObj.put("FName","");
 					page1JsonObj.put("FDeptID", deptObj);
-					// 业务员
+					// 业务员  ************ rs.getString(10)
 					JSONObject empObj = new JSONObject();
-					empObj.put("FNumber",rs.getString(10));
+					empObj.put("FNumber","");
 					empObj.put("FName","");
 					page1JsonObj.put("FEmpID", empObj);
-					// 制单人
+					// 制单人 ************ rs.getString(10)
 					JSONObject billerObj = new JSONObject();
-					billerObj.put("FNumber",rs.getString(10));
-					billerObj.put("FName","");
+					billerObj.put("FNumber","Administrator");
+					billerObj.put("FName","Administrator");
 					page1JsonObj.put("FBillerID", billerObj);
 					// 项目资源
 					JSONObject resourceObj = new JSONObject();
@@ -221,10 +221,10 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 					taskObj.put("FNumber","");
 					taskObj.put("FName","");
 					page1JsonObj.put("FTaskID", taskObj);
-					// 审核
+					// 审核 rs.getString(11)
 					JSONObject checkerObj = new JSONObject();
-					checkerObj.put("FNumber",rs.getString(11));
-					checkerObj.put("FName","");
+					checkerObj.put("FNumber","Administrator");
+					checkerObj.put("FName","Administrator");
 					page1JsonObj.put("FCheckerID", checkerObj);
 					// 概算金额
 					page1JsonObj.put("FBudgetAmountFor", 0.0);
@@ -252,7 +252,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 					// 费用总额（本位币）
 					page1JsonObj.put("FTotalExpense", 0);
 					// 核销状态
-					page1JsonObj.put("FBillStatus", "");
+					page1JsonObj.put("FBillStatus", 0);
 					// 抵扣税额
 					page1JsonObj.put("FOffsetTaxFor", 0);
 					// 抵扣税额（本位币）
@@ -260,9 +260,9 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 					// 自由项1
 					page1JsonObj.put("FFreeItem3", "");
 					// 红蓝字标志
-					page1JsonObj.put("FROB", "");
+					page1JsonObj.put("FROB", 1);
 					// 单据类型
-					page1JsonObj.put("FTranType", "");
+					page1JsonObj.put("FTranType", 604);
 					// 自由项2
 					page1JsonObj.put("FFreeItem4", "");
 					// 资产凭证字号
@@ -295,9 +295,9 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 					// 单据本位币累计核销金额
 					page1JsonObj.put("FCheckAmountBill", 0);
 					// 单据未核销金额
-					page1JsonObj.put("FRemainAmountForBill", 0);
+					page1JsonObj.put("FRemainAmountForBill", rs.getFloat(8));
 					// 单据本位币未核销金额
-					page1JsonObj.put("FRemainAmountBill", 0);
+					page1JsonObj.put("FRemainAmountBill", rs.getFloat(8)*rs.getFloat(5));
 					// 最后核销日期
 					page1JsonObj.put("FCheckDate", "");
 					// 状态
@@ -380,10 +380,10 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 						auxPropObj.put("FNumber", "");
 						auxPropObj.put("FName", "");
 						page3JsonObj.put("FAuxPropID", auxPropObj);
-						// 单位
+						// 单位  ************
 						JSONObject unitObj = new JSONObject();
-						unitObj.put("FNumber", rs2.getString(2));
-						unitObj.put("FName", "");
+						unitObj.put("FNumber", "");
+						unitObj.put("FName", rs2.getString(2));
 						page3JsonObj.put("FUnitID", unitObj);
 						// 基本单位
 						page3JsonObj.put("FBaseUnit", "");
@@ -405,14 +405,14 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 						// 单价
 						page3JsonObj.put("FAuxPrice", rs2.getFloat(4));
 						// 含税单价
-						page3JsonObj.put("FAuxTaxPrice", rs2.getFloat(4)*(1+0.01*rs2.getFloat(5)));
+						page3JsonObj.put("FAuxTaxPrice", rs2.getFloat(4)*(1+rs2.getFloat(5)));
 						// 折扣率(％)
 						page3JsonObj.put("FDiscountRate", rs2.getFloat(7)/rs2.getFloat(6)*100);
 						// 实际含税单价
 						if(rs2.getFloat(7)==0.0) {
-							page3JsonObj.put("FPriceDiscount", rs2.getFloat(4)*(1+0.01*rs2.getFloat(5)));
+							page3JsonObj.put("FPriceDiscount", rs2.getFloat(4)*(1+rs2.getFloat(5)));
 						}else {
-							page3JsonObj.put("FPriceDiscount", rs2.getFloat(4)*(1+0.01*rs2.getFloat(5))*(rs2.getFloat(7)/rs2.getFloat(6)));
+							page3JsonObj.put("FPriceDiscount", rs2.getFloat(4)*(1+rs2.getFloat(5))*(rs2.getFloat(7)/rs2.getFloat(6)));
 						}
 						// 源单内码
 						page3JsonObj.put("FSourceInterId", 0);
@@ -437,9 +437,9 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 						// 基本单位数量
 						page3JsonObj.put("FQty", rs2.getFloat(3));
 						// 含税价
-						page3JsonObj.put("FTaxPrice", rs2.getFloat(4)*(1+0.01*rs2.getFloat(5)));
+						page3JsonObj.put("FTaxPrice", rs2.getFloat(4)*(1+rs2.getFloat(5)));
 						// 税率(％)
-						page3JsonObj.put("FTaxRate", rs2.getFloat(5));
+						page3JsonObj.put("FTaxRate", rs2.getFloat(5)*100);
 						// 合同行号
 						page3JsonObj.put("FContractEntryID", 0);
 						// 源分录ID

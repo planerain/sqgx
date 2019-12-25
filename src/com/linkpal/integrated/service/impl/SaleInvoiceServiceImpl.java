@@ -171,7 +171,7 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 					FSaleStyleObj.put("FNumber","FXF02");
 					FSaleStyleObj.put("FName","");
 					page1JsonObj.put("FSaleStyle", FSaleStyleObj);
-					// 往来科目  rs.getString(6)
+					// 往来科目 ************ rs.getString(6)
 					JSONObject FAcctObj = new JSONObject();
 					FAcctObj.put("FNumber","1122.01.01");
 					FAcctObj.put("FName","");

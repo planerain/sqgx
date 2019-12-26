@@ -223,8 +223,8 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 					page1JsonObj.put("FTaskID", taskObj);
 					// 审核 rs.getString(11)
 					JSONObject checkerObj = new JSONObject();
-					checkerObj.put("FNumber","Administrator");
-					checkerObj.put("FName","Administrator");
+					checkerObj.put("FNumber","李佳乐");
+					checkerObj.put("FName","李佳乐");
 					page1JsonObj.put("FCheckerID", checkerObj);
 					// 概算金额
 					page1JsonObj.put("FBudgetAmountFor", 0.0);
@@ -272,9 +272,9 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 					// 累计调汇金额
 					page1JsonObj.put("FAdjustAmount", 0);
 					// 年份
-					page1JsonObj.put("FYear", Integer.parseInt(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyyMMdd").parse(rs.getString(3))).split("-")[0]));
+					page1JsonObj.put("FYear", Integer.parseInt(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString(3))).split("-")[0]));
 					// 期间
-					page1JsonObj.put("FPeriod", Integer.parseInt(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyyMMdd").parse(rs.getString(3))).split("-")[1]));
+					page1JsonObj.put("FPeriod", Integer.parseInt(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString(3))).split("-")[1]));
 					// 打印次数
 					page1JsonObj.put("FPrintCount", 0);
 					// 子系统
@@ -558,11 +558,15 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 					pst = conn.prepareStatement("update t_ESB_PurchaseInvoice set IsRead=1 where RKJS_MIXNUMBER=?");
 					pst.setString(1, billNo);
 					pst.execute();
+					pst2 = conn.prepareStatement("update ICPurchase set FCheckerID=16394 where FBillNo=?");
+					pst2.setString(1, billNo);
+					pst2.execute();
 				}
 			} catch (Exception e) {
 				Logger.info(e.getMessage());
 			}finally {
 				DBUtils.closeConnection(conn, pst, null);
+				DBUtils.closeConnection(conn, pst2, null);
 			}
 		}
 		Logger.info("返回报文为："+resultObj.toJSONString());

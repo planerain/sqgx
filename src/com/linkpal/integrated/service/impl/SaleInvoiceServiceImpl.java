@@ -213,8 +213,8 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 					page1JsonObj.put("FTaskID",FTaskObj);
 					// 审核
 					JSONObject FCheckerObj = new JSONObject();
-					FCheckerObj.put("FNumber","Administrator");
-					FCheckerObj.put("FName","Administrator");
+					FCheckerObj.put("FNumber","李佳乐");
+					FCheckerObj.put("FName","李佳乐");
 					page1JsonObj.put("FCheckerID",FCheckerObj);
 					// 项目资源
 					JSONObject FResourceObj = new JSONObject();
@@ -245,13 +245,13 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 					// 开户银行
 					page1JsonObj.put("FBank","");
 					// 核销
-					page1JsonObj.put("FArApStatus",0);
+					page1JsonObj.put("FArApStatus",1);
 					// 累计调汇金额
 					page1JsonObj.put("FAdjustAmount",0);
 					// 年份
-					page1JsonObj.put("FYear",Integer.parseInt(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyyMMdd").parse(rs.getString(3))).split("-")[0]));
+					page1JsonObj.put("FYear",Integer.parseInt(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString(3))).split("-")[0]));
 					// 期间
-					page1JsonObj.put("FPeriod",Integer.parseInt(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyyMMdd").parse(rs.getString(3))).split("-")[1]));
+					page1JsonObj.put("FPeriod",Integer.parseInt(new SimpleDateFormat("yyyy-MM-dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString(3))).split("-")[1]));
 					// 子系统
 					page1JsonObj.put("FSubSystemID",1);
 					// 自由项1
@@ -282,7 +282,7 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 					FHookerObj .put("FName","");
 					page1JsonObj.put("FHookerID",FHookerObj );
 					// 最后核销日期
-					page1JsonObj.put("FCheckDate","");
+					page1JsonObj.put("FCheckDate",rs.getString(3));
 					// 状态
 					page1JsonObj.put("FStatus",0);
 					// 整单折扣参数
@@ -365,11 +365,11 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 						// 数量
 						page3JsonObj.put("FAuxQty",rs2.getFloat(2));
 						// 已开发票金额
-						page3JsonObj.put("FHasInvoiceAmount",rs2.getFloat(4));
+						page3JsonObj.put("FHasInvoiceAmount",0);
 						// 付款申请关联数量
 						page3JsonObj.put("FQuantityPayApply_Commit",0.0);
 						// 收付款关联数量
-						page3JsonObj.put("FQuantityReceive_Commit",rs2.getFloat(2));
+						page3JsonObj.put("FQuantityReceive_Commit",0);
 						// 辅助单位
 						JSONObject  FSecUnitObj = new JSONObject();
 						FSecUnitObj.put("FNumber","");
@@ -532,11 +532,15 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 					pst = conn.prepareStatement("update t_ESB_SaleInvoice set IsRead=1 where JSMX_MIXNUMBER=?");
 					pst.setString(1, billNo);
 					pst.execute();
+					pst2 = conn.prepareStatement("update ICSale set FCheckerID=16394 where FBillNo=?");
+					pst2.setString(1, billNo);
+					pst2.execute();
 				}
 			} catch (Exception e) {
 				Logger.info(e.getMessage());
 			}finally {
 				DBUtils.closeConnection(conn, pst, null);
+				DBUtils.closeConnection(conn, pst2, null);
 			}
 		}
 		Logger.info("返回报文为："+resultObj.toJSONString());

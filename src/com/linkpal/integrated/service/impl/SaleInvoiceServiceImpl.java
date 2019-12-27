@@ -45,7 +45,7 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 		Logger.info("接收到的应收单数据为:"+saleInvoiceData);
 		JSONObject result = new JSONObject();
 		JSONObject saleInvoiceDataDataObj = JSONObject.parseObject(saleInvoiceData);
-		for (int i = 0; i < saleInvoiceDataDataObj.getJSONArray("JSMX").size(); i++) {
+		for (int i = 0; i < 1; i++) {
 			String glDate = saleInvoiceDataDataObj.getJSONArray("JSMX").getJSONObject(i).getString("JSMX_GLRQ");
 			String jskj = saleInvoiceDataDataObj.getJSONArray("JSMX").getJSONObject(i).getString("JSMX_JSKJ");
 			if(glDate==null || glDate.equals("")) {

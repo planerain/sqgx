@@ -47,6 +47,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 		JSONObject result = new JSONObject();
 		JSONObject purchaseInvoiceDataObj = JSONObject.parseObject(purchaseInvoiceData);
 		for (int i = 0; i < 1; i++) {
+			String djbh = purchaseInvoiceDataObj.getString("RKJS_MIXNUMBER");
 			String glDate = purchaseInvoiceDataObj.getJSONArray("JSMX").getJSONObject(i).getString("JSMX_GLRQ");
 			String jskj = purchaseInvoiceDataObj.getJSONArray("JSMX").getJSONObject(i).getString("JSMX_JSKJ");
 			if(glDate==null || glDate.equals("")) {
@@ -61,6 +62,9 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 				try {
 					conn = DBUtils.getConnection();
 					if(conn!=null) {
+						pst2 = conn.prepareStatement("delete from t_ESB_PurchaseInvoice where RKJS_MIXNUMBER=?");
+						pst2.setString(1, djbh);
+						pst2.execute();
 						pst = conn.prepareStatement("insert into t_ESB_PurchaseInvoice(RKJS_NM,RKJS_DJBH,RKJS_MIXNUMBER,RKJS_RQ,RKJS_DWBH,RKJS_BMBH,RKJS_ZDRYGBH,"
 								+ "RKJS_CSR,RKJS_CSRQ,RKJS_JHR,RKJS_JHRQ,RKJS_FHR,RKJS_FHRQ,RKJS_ZY,RKJS_FJZS,RKJS_JSHJ,JSMX_NM,JSMX_GYSBH,JSMX_ZY,JSMX_FPHM,JSMX_SFID,"
 								+ "JSMX_WLBH,JSMX_SL,JSMX_SLDW,JSMX_DJ,JSMX_BHSJE,JSMX_SLV,JSMX_SE,JSMX_JSHJ,JSMX_GGXH,JSMX_ZKJC,JSMX_KB,JSMX_BZ,JSMX_HLV,JSMX_RKRQ,JSMX_GLRQ,"
@@ -131,6 +135,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 					Logger.info(e.getMessage());
 				}finally {
 					DBUtils.closeConnection(conn, pst, null);
+					DBUtils.closeConnection(conn, pst2, null);
 				}
 				
 				JSONObject sendJsonObject = new JSONObject();

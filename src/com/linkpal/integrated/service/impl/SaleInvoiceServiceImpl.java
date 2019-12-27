@@ -46,6 +46,7 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 		JSONObject result = new JSONObject();
 		JSONObject saleInvoiceDataDataObj = JSONObject.parseObject(saleInvoiceData);
 		for (int i = 0; i < 1; i++) {
+			String djbh = saleInvoiceDataDataObj.getString("RKJS_DJBH");
 			String glDate = saleInvoiceDataDataObj.getJSONArray("JSMX").getJSONObject(i).getString("JSMX_GLRQ");
 			String jskj = saleInvoiceDataDataObj.getJSONArray("JSMX").getJSONObject(i).getString("JSMX_JSKJ");
 			if(glDate==null || glDate.equals("")) {
@@ -60,6 +61,9 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 				try {
 					conn = DBUtils.getConnection();
 					if(conn!=null) {
+						pst2 = conn.prepareStatement("delete from t_ESB_SaleInvoice where RKJS_DJBH=?");
+						pst2.setString(1, djbh);
+						pst2.execute();
 						pst = conn.prepareStatement("insert into t_ESB_SaleInvoice(RKJS_NM,RKJS_DJBH,RKJS_RQ,RKJS_DWBH,"
 								+ "RKJS_ZDRYGBH,RKJS_JSHJ,RKJS_ZY,JSMX_NM,JSMX_GYSBH,JSMX_FPHM,JSMX_SFID,JSMX_WLBH,JSMX_SL,"
 								+ "JSMX_SLDW,JSMX_DJ,JSMX_SLV,JSMX_SE,JSMX_JSHJ,JSMX_BZ,JSMX_HLV,JSMX_GLRQ,JSMX_JSKJ,JSMX_ZHKM,"
@@ -112,6 +116,7 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 					Logger.info(e.getMessage());
 				}finally {
 					DBUtils.closeConnection(conn, pst, null);
+					DBUtils.closeConnection(conn, pst2, null);
 				}
 				
 				JSONObject sendJsonObject = new JSONObject();

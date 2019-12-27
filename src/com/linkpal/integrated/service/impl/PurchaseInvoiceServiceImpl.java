@@ -106,7 +106,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 							pst.setString(31, entryData.getString("JSMX_ZKJC"));
 							pst.setString(32, entryData.getString("JSMX_KB"));
 							pst.setString(33, entryData.getString("JSMX_BZ"));
-							//pst.setFloat(34, entryData.getFloatValue("JSMX_HLV"));
+							//pst.setDouble(34, entryData.getDoubleValue("JSMX_HLV"));
 							pst.setFloat(34, 1.0f);
 							pst.setString(35, entryData.getString("JSMX_RKRQ"));
 							pst.setString(36, entryData.getString("JSMX_GLRQ")==null?"":entryData.getString("JSMX_GLRQ"));
@@ -186,7 +186,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 							currencyObj.put("FName","");
 							page1JsonObj.put("FCurrencyID", currencyObj);
 							// 汇率
-							page1JsonObj.put("FExchangeRate", rs.getFloat(5));
+							page1JsonObj.put("FExchangeRate", rs.getDouble(5));
 							// 年利率(％)
 							page1JsonObj.put("FInterestRate", 0.0);
 							// 往来科目  ************ rs.getString(6) 
@@ -195,7 +195,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 							acttObj.put("FName","");
 							page1JsonObj.put("FAcctID", acttObj);
 							// 调整汇率
-							page1JsonObj.put("FAdjustExchangeRate", rs.getFloat(5));
+							page1JsonObj.put("FAdjustExchangeRate", rs.getDouble(5));
 							// 采购方式
 							JSONObject poStyleObj = new JSONObject();
 							poStyleObj.put("FNumber","");
@@ -206,9 +206,9 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 							// 备注（合同号）
 							page1JsonObj.put("FCompactNo", "");
 							// 总成本额
-							page1JsonObj.put("FTotalCostFor", rs.getFloat(8));
+							page1JsonObj.put("FTotalCostFor", rs.getDouble(8));
 							// 总成本额（本位币）
-							page1JsonObj.put("FTotalCost", rs.getFloat(8)*rs.getFloat(5));
+							page1JsonObj.put("FTotalCost", rs.getDouble(8)*rs.getDouble(5));
 							// 源单类型
 							page1JsonObj.put("FSourceBillType", "");
 							// 源单编号
@@ -314,9 +314,9 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 							// 单据本位币累计核销金额
 							page1JsonObj.put("FCheckAmountBill", 0);
 							// 单据未核销金额
-							page1JsonObj.put("FRemainAmountForBill", rs.getFloat(8));
+							page1JsonObj.put("FRemainAmountForBill", rs.getDouble(8));
 							// 单据本位币未核销金额
-							page1JsonObj.put("FRemainAmountBill", rs.getFloat(8)*rs.getFloat(5));
+							page1JsonObj.put("FRemainAmountBill", rs.getDouble(8)*rs.getDouble(5));
 							// 最后核销日期
 							page1JsonObj.put("FCheckDate", "");
 							// 状态
@@ -355,11 +355,11 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 							// 应付日期
 							page2JsonObj.put("fdate_2", rs.getString(3));
 							// 付款金额
-							page2JsonObj.put("FAmountFor", rs.getFloat(8));
+							page2JsonObj.put("FAmountFor", rs.getDouble(8));
 							// 原始单据内码
 							page2JsonObj.put("FOrgID", 0);
 							// 付款金额（本位币）
-							page2JsonObj.put("FAmount2", rs.getFloat(8)*rs.getFloat(5));
+							page2JsonObj.put("FAmount2", rs.getDouble(8)*rs.getDouble(5));
 							// 剩余金额(本位币)
 							page2JsonObj.put("FRemainAmount", 0);
 							// 剩余金额（原币）
@@ -407,11 +407,11 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 								// 基本单位
 								page3JsonObj.put("FBaseUnit", "");
 								// 数量
-								page3JsonObj.put("FAuxQty", rs2.getFloat(3));
+								page3JsonObj.put("FAuxQty", rs2.getDouble(3));
 								// 付款申请关联数量
 								page3JsonObj.put("FQuantityPayApply_Commit", 0);
 								// 收付款关联数量
-								page3JsonObj.put("FQuantityReceive_Commit", rs2.getFloat(3));
+								page3JsonObj.put("FQuantityReceive_Commit", rs2.getDouble(3));
 								// 辅助单位
 								JSONObject secUnitObj = new JSONObject();
 								secUnitObj.put("FNumber", "");
@@ -422,63 +422,63 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 								// 辅助单位数量
 								page3JsonObj.put("FSecQty", 0);
 								// 单价
-								page3JsonObj.put("FAuxPrice", rs2.getFloat(4));
+								page3JsonObj.put("FAuxPrice", rs2.getDouble(4));
 								// 含税单价
-								page3JsonObj.put("FAuxTaxPrice", rs2.getFloat(4)*(1+rs2.getFloat(5)));
+								page3JsonObj.put("FAuxTaxPrice", rs2.getDouble(4)*(1+rs2.getDouble(5)));
 								// 折扣率(％)
-								page3JsonObj.put("FDiscountRate", rs2.getFloat(7)/rs2.getFloat(6)*100);
+								page3JsonObj.put("FDiscountRate", rs2.getDouble(7)/rs2.getDouble(6)*100);
 								// 实际含税单价
-								if(rs2.getFloat(7)==0.0) {
-									page3JsonObj.put("FPriceDiscount", rs2.getFloat(4)*(1+rs2.getFloat(5)));
+								if(rs2.getDouble(7)==0.0) {
+									page3JsonObj.put("FPriceDiscount", rs2.getDouble(4)*(1+rs2.getDouble(5)));
 								}else {
-									page3JsonObj.put("FPriceDiscount", rs2.getFloat(4)*(1+rs2.getFloat(5))*(rs2.getFloat(7)/rs2.getFloat(6)));
+									page3JsonObj.put("FPriceDiscount", rs2.getDouble(4)*(1+rs2.getDouble(5))*(rs2.getDouble(7)/rs2.getDouble(6)));
 								}
 								// 源单内码
 								page3JsonObj.put("FSourceInterId", 0);
 								// 折扣额
-								page3JsonObj.put("FAmtDiscount", rs2.getFloat(7));
+								page3JsonObj.put("FAmtDiscount", rs2.getDouble(7));
 								// 折扣额（本位币）
-								page3JsonObj.put("FStdAmtDiscount", rs2.getFloat(7)*rs.getFloat(5));
+								page3JsonObj.put("FStdAmtDiscount", rs2.getDouble(7)*rs.getDouble(5));
 								// 整单折扣分配额
 								page3JsonObj.put("FEntryDisCount", 0);
 								// 整单折扣分配额(本位币)
 								page3JsonObj.put("FStdEntryDisCount", 0);
 								// 整单折前金额
-								page3JsonObj.put("FAmountExceptDisCount", rs.getFloat(8));
+								page3JsonObj.put("FAmountExceptDisCount", rs.getDouble(8));
 								// 整单折前金额(本位币)
-								page3JsonObj.put("FStdAmountExceptDisCount", rs.getFloat(8)*rs.getFloat(5));
+								page3JsonObj.put("FStdAmountExceptDisCount", rs.getDouble(8)*rs.getDouble(5));
 								// 金额
-								page3JsonObj.put("FAmount3", rs2.getFloat(6)-rs2.getFloat(9));
+								page3JsonObj.put("FAmount3", rs2.getDouble(6)-rs2.getDouble(9));
 								// 金额(本位币)
-								page3JsonObj.put("FStdAmount", (rs2.getFloat(6)-rs2.getFloat(9))*rs.getFloat(5));
+								page3JsonObj.put("FStdAmount", (rs2.getDouble(6)-rs2.getDouble(9))*rs.getDouble(5));
 								// 基本单价
-								page3JsonObj.put("FPrice", rs2.getFloat(4));
+								page3JsonObj.put("FPrice", rs2.getDouble(4));
 								// 基本单位数量
-								page3JsonObj.put("FQty", rs2.getFloat(3));
+								page3JsonObj.put("FQty", rs2.getDouble(3));
 								// 含税价
-								page3JsonObj.put("FTaxPrice", rs2.getFloat(4)*(1+rs2.getFloat(5)));
+								page3JsonObj.put("FTaxPrice", rs2.getDouble(4)*(1+rs2.getDouble(5)));
 								// 税率(％)
-								page3JsonObj.put("FTaxRate", rs2.getFloat(5)*100);
+								page3JsonObj.put("FTaxRate", rs2.getDouble(5)*100);
 								// 合同行号
 								page3JsonObj.put("FContractEntryID", 0);
 								// 源分录ID
 								page3JsonObj.put("FEntryID_SRC", rs2.getInt(8));
 								// 税额
-								page3JsonObj.put("FTaxAmount", rs2.getFloat(9));
+								page3JsonObj.put("FTaxAmount", rs2.getDouble(9));
 								// 付款申请付款金额
 								page3JsonObj.put("FPayReqPayAmountFor", 0);
 								// 订单类型
 								page3JsonObj.put("FOrderType", 0);
 								// 税额（本位币）
-								page3JsonObj.put("FStdTaxAmount", rs2.getFloat(9)*rs.getFloat(5));
+								page3JsonObj.put("FStdTaxAmount", rs2.getDouble(9)*rs.getDouble(5));
 								// 订单行号
 								page3JsonObj.put("FOrderEntryID", 0);
 								// 订单内码
 								page3JsonObj.put("FOrderInterID", 0);
 								// 价税合计
-								page3JsonObj.put("FAmountIncludeTax", rs2.getFloat(6));
+								page3JsonObj.put("FAmountIncludeTax", rs2.getDouble(6));
 								// 价税合计（本位币）
-								page3JsonObj.put("FStdAmountIncludeTax", rs2.getFloat(6)*rs.getFloat(5));
+								page3JsonObj.put("FStdAmountIncludeTax", rs2.getDouble(6)*rs.getDouble(5));
 								// 整单折前价税合计
 								page3JsonObj.put("FAllAmountExceptDisCount", 0);
 								// 整单折前价税合计(本位币)
@@ -515,13 +515,13 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 								// 累计核销金额(本位币)
 								page3JsonObj.put("FCheckAmount", 0);
 								// 未核销金额
-								page3JsonObj.put("FRemainAmountForEntry", rs2.getFloat(6)-rs2.getFloat(9));
+								page3JsonObj.put("FRemainAmountForEntry", rs2.getDouble(6)-rs2.getDouble(9));
 								// 未核销金额(本位币)
-								page3JsonObj.put("FRemainAmountEntry", (rs2.getFloat(6)-rs2.getFloat(9))*rs.getFloat(5));
+								page3JsonObj.put("FRemainAmountEntry", (rs2.getDouble(6)-rs2.getDouble(9))*rs.getDouble(5));
 								// 累计核销数量
 								page3JsonObj.put("FCheckQty", 0);
 								// 未核销数量
-								page3JsonObj.put("FRemainQty", rs2.getFloat(3));
+								page3JsonObj.put("FRemainQty", rs2.getDouble(3));
 								// 红字发票已关联已核销金额(本位币)
 								page3JsonObj.put("FInvLinkCheckAmount", 0);
 								// 红字发票关联金额(本位币)

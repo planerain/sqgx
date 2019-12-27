@@ -46,7 +46,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 		Logger.info("接收到的应付单数据为:"+purchaseInvoiceData);
 		JSONObject result = new JSONObject();
 		JSONObject purchaseInvoiceDataObj = JSONObject.parseObject(purchaseInvoiceData);
-		for (int i = 0; i < 12; i++) {
+		for (int i = 0; i < 1; i++) {
 			String glDate = purchaseInvoiceDataObj.getJSONArray("JSMX").getJSONObject(i).getString("JSMX_GLRQ");
 			String jskj = purchaseInvoiceDataObj.getJSONArray("JSMX").getJSONObject(i).getString("JSMX_JSKJ");
 			if(glDate==null || glDate.equals("")) {

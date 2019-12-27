@@ -85,7 +85,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 						pst.setString(13, purchaseInvoiceDataObj.getString("RKJS_FHRQ")==null?"":purchaseInvoiceDataObj.getString("RKJS_FHRQ"));
 						pst.setString(14, purchaseInvoiceDataObj.getString("RKJS_ZY"));
 						pst.setInt(15, purchaseInvoiceDataObj.getIntValue("RKJS_FJZS"));
-						pst.setFloat(16, purchaseInvoiceDataObj.getFloatValue("RKJS_JSHJ"));
+						pst.setDouble(16, purchaseInvoiceDataObj.getDoubleValue("RKJS_JSHJ"));
 						JSONArray entries = purchaseInvoiceDataObj.getJSONArray("JSMX");
 						for (int j = 0; j < entries.size(); j++) {
 							JSONObject entryData = entries.getJSONObject(j);
@@ -97,11 +97,11 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 							pst.setString(22, entryData.getString("JSMX_WLBH"));
 							pst.setInt(23, entryData.getIntValue("JSMX_SL"));
 							pst.setString(24, entryData.getString("JSMX_SLDW"));
-							pst.setFloat(25, entryData.getFloatValue("JSMX_DJ"));
-							pst.setFloat(26, entryData.getFloatValue("JSMX_BHSJE"));
+							pst.setDouble(25, entryData.getDoubleValue("JSMX_DJ"));
+							pst.setDouble(26, entryData.getDoubleValue("JSMX_BHSJE"));
 							pst.setString(27, entryData.getString("JSMX_SLV"));
-							pst.setFloat(28, entryData.getFloatValue("JSMX_SE"));
-							pst.setFloat(29, entryData.getFloatValue("JSMX_JSHJ"));
+							pst.setDouble(28, entryData.getDoubleValue("JSMX_SE"));
+							pst.setDouble(29, entryData.getDoubleValue("JSMX_JSHJ"));
 							pst.setString(30, entryData.getString("JSMX_GGXH"));
 							pst.setString(31, entryData.getString("JSMX_ZKJC"));
 							pst.setString(32, entryData.getString("JSMX_KB"));
@@ -124,7 +124,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 							pst.setString(48, entryData.getString("JSMX_OU"));
 							pst.setString(49, entryData.getString("JSMX_HLLX"));
 							pst.setString(50, entryData.getString("JSMX_HLRQ")==null?"":entryData.getString("JSMX_HLRQ"));
-							pst.setFloat(51, entryData.getFloatValue("JSMX_FPHJE"));
+							pst.setDouble(51, entryData.getDoubleValue("JSMX_FPHJE"));
 							pst.setString(52, entryData.getString("JSMX_COMPANY"));
 							pst.setString(53, entryData.getString("JSMX_BM"));
 							pst.setString(54, entryData.getString("JSMX_CSRQ")==null?"":entryData.getString("JSMX_CSRQ"));

@@ -75,7 +75,7 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 						pst.setString(3, saleInvoiceDataDataObj.getString("RKJS_RQ"));
 						pst.setString(4, saleInvoiceDataDataObj.getString("RKJS_DWBH"));
 						pst.setString(5, saleInvoiceDataDataObj.getString("RKJS_ZDRYGBH"));
-						pst.setFloat(6, saleInvoiceDataDataObj.getFloatValue("RKJS_JSHJ"));
+						pst.setDouble(6, saleInvoiceDataDataObj.getDoubleValue("RKJS_JSHJ"));
 						pst.setString(7, saleInvoiceDataDataObj.getString("RKJS_ZY"));
 						JSONArray entries = saleInvoiceDataDataObj.getJSONArray("JSMX");
 						for (int j = 0; j < entries.size(); j++) {
@@ -87,10 +87,10 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 							pst.setString(12, entryData.getString("JSMX_WLBH"));
 							pst.setInt(13, entryData.getIntValue("JSMX_SL"));
 							pst.setString(14, entryData.getString("JSMX_SLDW"));
-							pst.setFloat(15, entryData.getFloatValue("JSMX_DJ"));
+							pst.setDouble(15, entryData.getDoubleValue("JSMX_DJ"));
 							pst.setString(16, entryData.getString("JSMX_SLV"));
-							pst.setFloat(17, entryData.getFloatValue("JSMX_SE"));
-							pst.setFloat(18, entryData.getFloatValue("JSMX_JSHJ"));
+							pst.setDouble(17, entryData.getDoubleValue("JSMX_SE"));
+							pst.setDouble(18, entryData.getDoubleValue("JSMX_JSHJ"));
 							pst.setString(19, entryData.getString("JSMX_BZ"));
 							//pst.setFloat(20, entryData.getFloatValue("JSMX_HLV"));
 							pst.setFloat(20, 1.0f);
@@ -107,7 +107,7 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 							pst.setString(31, entryData.getString("JSMX_GNM1"));
 							pst.setString(32, entryData.getString("JSMX_GNM2"));
 							pst.setString(33, entryData.getString("JSMX_GNM7"));
-							pst.setFloat(34, entryData.getFloatValue("JSMX_SZ2"));
+							pst.setDouble(34, entryData.getDoubleValue("JSMX_SZ2"));
 							pst.setString(35, entryData.getString("JSMX_GBZ3"));
 							pst.execute();
 						}

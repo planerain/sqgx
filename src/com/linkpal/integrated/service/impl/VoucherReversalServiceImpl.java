@@ -51,11 +51,11 @@ public class VoucherReversalServiceImpl implements VoucherReversalService {
 		// 业务冲销
 		if (reverseType.equals("0")) {
 			// 获取Token值
-			String authorityCode = "4f03ba08c7d87ece76858af449ad24e0f9a2ad3bafafe148";
-			String token = HttpUtil.sendGet("http://172.16.7.153/K3API/Token/Create", "authorityCode=" + authorityCode);
+			String authorityCode = "a0fab0be4fc33a94ebae61e0dd07355002a67c19163b7ed4";
+			String token = HttpUtil.sendGet("http://172.90.3.248/K3API/Token/Create", "authorityCode=" + authorityCode);
 			// 根据凭证ID查询凭证信息
 			String param = "{\"Filter\": \"FVoucherId=" + erpVoucherId + "\"}";
-			String response = HttpUtil.sendPost("http://172.16.7.153/K3API/VoucherData/QueryVoucher?token="
+			String response = HttpUtil.sendPost("http://172.90.3.248/K3API/VoucherData/QueryVoucher?token="
 					+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"), param);
 			Logger.info("查询结果："+response);
 			JSONObject resObj = JSONObject.parseObject(response).getJSONArray("Data").getJSONObject(0);
@@ -89,18 +89,18 @@ public class VoucherReversalServiceImpl implements VoucherReversalService {
 			Logger.info("业务冲销凭证生成数据为:"+StringEscapeUtils.unescapeJava(JSON.toJSONString(sendJson, SerializerFeature.WriteMapNullValue)));
 			// 生成冲销凭证
 			HttpUtil.sendPost(
-					"http://172.16.7.153/K3API/VoucherData/UpdateVoucher?token="
+					"http://172.90.3.248/K3API/VoucherData/UpdateVoucher?token="
 							+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"),
 							StringEscapeUtils.unescapeJava(JSON.toJSONString(sendJson, SerializerFeature.WriteMapNullValue)));
 		}
 		// 技术冲销
 		if (reverseType.equals("1")) {
 			// 获取Token值
-		    String authorityCode = "4f03ba08c7d87ece76858af449ad24e0f9a2ad3bafafe148";
-		    String token = HttpUtil.sendGet("http://172.16.7.153/K3API/Token/Create", "authorityCode=" + authorityCode);
+		    String authorityCode = "a0fab0be4fc33a94ebae61e0dd07355002a67c19163b7ed4";
+		    String token = HttpUtil.sendGet("http://172.90.3.248/K3API/Token/Create", "authorityCode=" + authorityCode);
 		    // 根据凭证ID查询凭证信息
 		    String param = "{\"Filter\": \"FVoucherId=" + erpVoucherId + "\"}";
-		    String response = HttpUtil.sendPost("http://172.16.7.153/K3API/VoucherData/QueryVoucher?token="
+		    String response = HttpUtil.sendPost("http://172.90.3.248/K3API/VoucherData/QueryVoucher?token="
 		    		+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"), param);
 		    JSONObject resObj = JSONObject.parseObject(response).getJSONArray("Data").getJSONObject(0);
 		    date = resObj.getString("FDate").replace('-', '/');
@@ -130,7 +130,7 @@ public class VoucherReversalServiceImpl implements VoucherReversalService {
 		    JSONObject sendJson = new JSONObject(sendMap);
 		    // 生成冲销凭证
 		    HttpUtil.sendPost(
-		    		"http://172.16.7.153/K3API/VoucherData/UpdateVoucher?token="
+		    		"http://172.90.3.248/K3API/VoucherData/UpdateVoucher?token="
 		    				+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"),
 		    		JSON.toJSONString(sendJson, SerializerFeature.WriteMapNullValue));
 		    // 生成新的凭证

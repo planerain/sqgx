@@ -68,8 +68,8 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 								+ "RKJS_ZDRYGBH,RKJS_JSHJ,RKJS_ZY,JSMX_NM,JSMX_GYSBH,JSMX_FPHM,JSMX_SFID,JSMX_WLBH,JSMX_SL,"
 								+ "JSMX_SLDW,JSMX_DJ,JSMX_SLV,JSMX_SE,JSMX_JSHJ,JSMX_BZ,JSMX_HLV,JSMX_GLRQ,JSMX_JSKJ,JSMX_ZHKM,"
 								+ "JSMX_HH,JSMX_HLLX,JSMX_CSRQ,JSMX_ZKJC,JSMX_MIXNUMBER,JSMX_GXM1,JSMX_GXM9,JSMX_GNM1,JSMX_GNM2,"
-								+ "JSMX_GNM7,JSMX_SZ2,JSMX_GBZ3) "
-								+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+								+ "JSMX_GNM7,JSMX_SZ2,JSMX_GBZ3,RKJS_BMBH) "
+								+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 						pst.setString(1, saleInvoiceDataDataObj.getString("RKJS_NM"));
 						pst.setString(2, saleInvoiceDataDataObj.getString("RKJS_DJBH"));
 						pst.setString(3, saleInvoiceDataDataObj.getString("RKJS_RQ"));
@@ -77,6 +77,7 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 						pst.setString(5, saleInvoiceDataDataObj.getString("RKJS_ZDRYGBH"));
 						pst.setDouble(6, saleInvoiceDataDataObj.getDoubleValue("RKJS_JSHJ"));
 						pst.setString(7, saleInvoiceDataDataObj.getString("RKJS_ZY"));
+						pst.setString(36, saleInvoiceDataDataObj.getString("RKJS_BMBH"));
 						JSONArray entries = saleInvoiceDataDataObj.getJSONArray("JSMX");
 						for (int j = 0; j < entries.size(); j++) {
 							JSONObject entryData = entries.getJSONObject(j);
@@ -134,7 +135,7 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 				try {
 					conn = DBUtils.getConnection();
 					if(conn!=null) {
-						pst = conn.prepareStatement("select distinct top 1 JSMX_MIXNUMBER,JSMX_GYSBH,JSMX_GLRQ,JSMX_HLV,JSMX_BZ,JSMX_ZHKM,RKJS_ZY,RKJS_ZDRYGBH,RKJS_JSHJ,RKJS_DJBH from t_ESB_SaleInvoice where IsRead=0 and id = (select MAX(id) from t_ESB_SaleInvoice)");
+						pst = conn.prepareStatement("select distinct top 1 JSMX_MIXNUMBER,JSMX_GYSBH,JSMX_GLRQ,JSMX_HLV,JSMX_BZ,JSMX_ZHKM,RKJS_ZY,RKJS_ZDRYGBH,RKJS_JSHJ,RKJS_DJBH,RKJS_BMBH from t_ESB_SaleInvoice where IsRead=0 and id = (select MAX(id) from t_ESB_SaleInvoice)");
 						rs = pst.executeQuery();
 						while (rs.next()) {
 							billNo = rs.getString(10);
@@ -192,7 +193,7 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 							page1JsonObj.put("FSaleStyle", FSaleStyleObj);
 							// 往来科目 ************ rs.getString(6)
 							JSONObject FAcctObj = new JSONObject();
-							FAcctObj.put("FNumber","1122.01.01");
+							FAcctObj.put("FNumber","1122.01");
 							FAcctObj.put("FName","");
 							page1JsonObj.put("FAcctID",FAcctObj);
 							// 摘要
@@ -215,9 +216,9 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 							FEmpObj.put("FNumber","");
 							FEmpObj.put("FName","");
 							page1JsonObj.put("FEmpID",FEmpObj);
-							// 部门  根据合同号带出
+							// 部门
 							JSONObject 	FDeptObj = new JSONObject();
-							FDeptObj.put("FNumber","");
+							FDeptObj.put("FNumber",rs.getString(11));
 							FDeptObj.put("FName","");
 							page1JsonObj.put("FDeptID",FDeptObj);
 							// 制单
@@ -417,13 +418,13 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 								// 折扣额（本位币）
 							    page3JsonObj.put("FStdAmtDiscount",rs2.getDouble(7)*rs.getDouble(4));
 								// 金额
-							    page3JsonObj.put("FAmount3",rs2.getDouble(4)-rs2.getDouble(7));
+							    page3JsonObj.put("FAmount3",rs2.getDouble(4)-rs2.getDouble(9));
 								// 基本单价
 							    page3JsonObj.put("FPrice",rs2.getDouble(5)/(1+rs2.getDouble(6)));
 								// 含税价
 							    page3JsonObj.put("FTaxPrice",rs2.getDouble(5));
 								// 金额（本位币）
-							    page3JsonObj.put("FStdAmount",(rs2.getDouble(4)-rs2.getDouble(7))*rs.getDouble(4));
+							    page3JsonObj.put("FStdAmount",(rs2.getDouble(4)-rs2.getDouble(9))*rs.getDouble(4));
 								// 合同行号
 							    page3JsonObj.put("FContractEntryID",0);
 								// 源分录ID
@@ -478,11 +479,11 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 								// 累计核销金额(本位币)
 								page3JsonObj.put("FCheckAmount",0.00);
 								// 未核销金额
-								page3JsonObj.put("FRemainAmountForEntry",rs2.getDouble(4));
+								page3JsonObj.put("FRemainAmountForEntry",(rs2.getDouble(4)-rs2.getDouble(9)));
 								// 累计已核销已关联数量
 								page3JsonObj.put("FLinkCheckQty", 0.00);
 								// 未核销金额(本位币)
-								page3JsonObj.put("FRemainAmountEntry",rs2.getDouble(4)*rs.getDouble(4));
+								page3JsonObj.put("FRemainAmountEntry",(rs2.getDouble(4)-rs2.getDouble(9))*rs.getDouble(4));
 								// 累计核销数量
 								page3JsonObj.put("FCheckQty", 0.00);
 								// 未核销数量
@@ -537,11 +538,11 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
 				String param = JSON.toJSONString(sendJsonObject, SerializerFeature.WriteMapNullValue);
 				Logger.info("向接口发送的数据为:"+param);
 				// 发送 GET 请求
-				String authorityCode = "71dcfd6f3cd7e764f5b26917d8566bb0abf051c14717c7ea";
-				String token = HttpUtil.sendGet("http://172.16.7.191/K3API/Token/Create", "authorityCode=" + authorityCode);
+				String authorityCode = "3f0fa4160c02c6adf0185ccf7454f203fde60ec0b09fe4c1";
+				String token = HttpUtil.sendGet("http://172.90.3.248/K3API/Token/Create", "authorityCode=" + authorityCode);
 				
 				// 发送POST请求
-				String response = HttpUtil.sendPost("http://172.16.7.191/K3API/Bill1000002/Save?token="
+				String response = HttpUtil.sendPost("http://172.90.3.248/K3API/Bill1000002/Save?token="
 								+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"), param);
 				result = JSONObject.parseObject(response);
 				if(result.getIntValue("StatusCode") == 200) {

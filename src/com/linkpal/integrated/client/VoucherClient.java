@@ -73,13 +73,13 @@ public class VoucherClient {
 							secondChecker = rs2.getString(5);
 						}
 						// 发送 GET 请求
-						String authorityCode = "4f03ba08c7d87ece76858af449ad24e0f9a2ad3bafafe148";
-						String token = HttpUtil.sendGet("http://172.16.7.153/K3API/Token/Create",
+						String authorityCode = "a0fab0be4fc33a94ebae61e0dd07355002a67c19163b7ed4";
+						String token = HttpUtil.sendGet("http://172.90.3.248/K3API/Token/Create",
 								"authorityCode=" + authorityCode);
 						// 发送POST请求
 						String param = "{\"Filter\": \"FVoucherId=" + VoucherId + "\"}";
 						String response = HttpUtil.sendPost(
-								"http://172.16.7.153/K3API/VoucherData/QueryVoucher?token="
+								"http://172.90.3.248/K3API/VoucherData/QueryVoucher?token="
 										+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"),
 								param);
 						JSONObject resObj = JSONObject.parseObject(response);

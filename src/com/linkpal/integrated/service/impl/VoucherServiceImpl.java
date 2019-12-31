@@ -150,7 +150,7 @@ public class VoucherServiceImpl implements VoucherService {
 		try {
 			conn = DBUtils.getConnection();
 			if(conn!=null) {
-				pst = conn.prepareStatement("select distinct top 1 	VoucherID,ZWPZK_DWBH,ZWPZK_KJND,ZWPZK_KJQJ,ZWPZK_PZRQ,ZWPZK_PZBH,ZWPZK_LXBH,ZWPZK_FJZS,ZWPZK_CSR,ZWPZK_CSRMC,ZWPZK_FSR,ZWPZK_FSRMC,ZWPZK_TZDZS,ZWPZK_ZY,ZWPZK_JE,ZWPZK_DJBH,ZWFZYS_WBBH,ZWFZYS_HL,CREATEDTIME,ZWPZK_ZHID from t_ESB_Voucher where IsRead=0");
+				pst = conn.prepareStatement("select distinct top 1 	VoucherID,ZWPZK_DWBH,ZWPZK_KJND,ZWPZK_KJQJ,ZWPZK_PZRQ,ZWPZK_PZBH,ZWPZK_LXBH,ZWPZK_FJZS,ZWPZK_CSR,ZWPZK_CSRMC,ZWPZK_FSR,ZWPZK_FSRMC,ZWPZK_TZDZS,ZWPZK_ZY,ZWPZK_JE,ZWPZK_DJBH,ZWFZYS_WBBH,ZWFZYS_HL,CREATEDTIME,ZWPZK_ZHID from t_ESB_Voucher where IsRead=0 and id = (select MAX(id) from t_ESB_Voucher)");
 				rs = pst.executeQuery();
 				while (rs.next()) {
 					gxVoucherId = rs.getString(1);
@@ -374,11 +374,11 @@ public class VoucherServiceImpl implements VoucherService {
 		String param = JSON.toJSONString(vd, SerializerFeature.WriteMapNullValue);
 		Logger.info("向接口发送的数据为:"+param);
 		// 发送 GET 请求
-		String authorityCode = "cc7c2a733c0a29ece004ca4aaa31fa27a349134496f8c1d0";
-		String token = HttpUtil.sendGet("http://172.16.7.191/K3API/Token/Create", "authorityCode=" + authorityCode);
+		String authorityCode = "a0fab0be4fc33a94ebae61e0dd07355002a67c19163b7ed4";
+		String token = HttpUtil.sendGet("http://172.90.3.248/K3API/Token/Create", "authorityCode=" + authorityCode);
 				
 		// 发送POST请求
-		String response = HttpUtil.sendPost("http://172.16.7.191/K3API/VoucherData/UpdateVoucher?token="
+		String response = HttpUtil.sendPost("http://172.90.3.248/K3API/VoucherData/UpdateVoucher?token="
 						+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"), param);
 		//JaxWsDynamicClientFactory clientFactory =JaxWsDynamicClientFactory.newInstance();
 		//Client client = clientFactory.createClient("http://172.16.2.139/cwbase/service/jzstandiface/VoucherGenerateResultService.asmx?wsdl");

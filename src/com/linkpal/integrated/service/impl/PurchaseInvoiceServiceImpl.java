@@ -191,7 +191,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 							page1JsonObj.put("FInterestRate", 0.0);
 							// 往来科目  ************ rs.getString(6) 
 							JSONObject acttObj = new JSONObject();
-							acttObj.put("FNumber","1123.01");
+							acttObj.put("FNumber","2202.01");
 							acttObj.put("FName","");
 							page1JsonObj.put("FAcctID", acttObj);
 							// 调整汇率
@@ -563,11 +563,11 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 				String param = JSON.toJSONString(sendJsonObject, SerializerFeature.WriteMapNullValue);
 				Logger.info("向接口发送的数据为:"+param);
 				// 发送 GET 请求
-				String authorityCode = "71dcfd6f3cd7e764f5b26917d8566bb0abf051c14717c7ea";
-				String token = HttpUtil.sendGet("http://172.16.7.191/K3API/Token/Create", "authorityCode=" + authorityCode);
+				String authorityCode = "3f0fa4160c02c6adf0185ccf7454f203fde60ec0b09fe4c1";
+				String token = HttpUtil.sendGet("http://172.90.3.248/K3API/Token/Create", "authorityCode=" + authorityCode);
 				
 				// 发送POST请求
-				String response = HttpUtil.sendPost("http://172.16.7.191/K3API/Bill1000004/Save?token="
+				String response = HttpUtil.sendPost("http://172.90.3.248/K3API/Bill1000004/Save?token="
 								+ JSON.parseObject(JSON.parseObject(token).get("Data").toString()).get("Token"), param);
 				result = JSONObject.parseObject(response);
 				if(result.getIntValue("StatusCode") == 200) {
